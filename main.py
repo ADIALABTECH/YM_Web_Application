@@ -23,7 +23,7 @@ class Data:
         pass
 
     def checkData(self):
-        db = pymysql.connect(host='localhost', user='root', db='ym_result', password='admin0808', charset='utf8')
+        db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
         curs = db.cursor()
 
         sql = '''SELECT IFNULL(MAX(index_num),0) FROM tb_inspection_model_list WHERE create_date = %s'''
@@ -41,7 +41,7 @@ class Data:
 
     # 조회
     def selectData(self):
-        db = pymysql.connect(host='localhost', user='root', db='ym_result', password='admin0808', charset='utf8')
+        db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
         curs = db.cursor()
 
         sql = '''SELECT id, index_num, model_name, state FROM tb_inspection_model_list WHERE create_date = %s'''
@@ -67,7 +67,7 @@ class Data:
 
     # 초기화
     def clearItem(self):
-        db = pymysql.connect(host='localhost', user='root', db='ym_result', password='admin0808', charset='utf8')
+        db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
         curs = db.cursor()
 
         # sql = "DELETE FROM test_table"
@@ -83,7 +83,7 @@ class Data:
 
     # 추가
     def insertItem(self, num, model):
-        db = pymysql.connect(host='localhost', user='root', db='ym_result', password='admin0808', charset='utf8')
+        db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
         curs = db.cursor()
 
         sql = '''INSERT INTO tb_inspection_model_list (index_num, model_name, create_date) VALUES (%s, %s, %s)'''
@@ -96,7 +96,7 @@ class Data:
 
     # 수정
     def updateItem(self, model_id, model):
-        db = pymysql.connect(host='localhost', user='root', db='ym_result', password='admin0808', charset='utf8')
+        db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
         curs = db.cursor()
 
         sql = '''UPDATE tb_inspection_model_list SET model_name = %s where id = %s'''
@@ -107,7 +107,7 @@ class Data:
 
     # 삭제
     def deleteItem(self, model_id):
-        db = pymysql.connect(host='localhost', user='root', db='ym_result', password='admin0808', charset='utf8')
+        db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
         curs = db.cursor()
 
         sql = '''SELECT IFNULL(MAX(id),0) FROM  tb_inspection_model_list '''

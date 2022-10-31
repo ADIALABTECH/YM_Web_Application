@@ -2,7 +2,7 @@ import * as Render_insert from "../js/compoments/insert.mjs";
 import * as Render_main from "../js/compoments/main.mjs";
 import * as API from "../js/api.mjs";
 
-export const ws_connect = () => {
+export const ws_connect = (ws_path) => {
     // 웹 서버를 접속한다.
    var webSocket = new WebSocket("ws://127.0.0.1:5535");
    // 웹 서버와의 통신을 주고 받은 결과를 출력할 오브젝트를 가져옵니다.
@@ -28,7 +28,7 @@ export const ws_connect = () => {
     })
    };
    // 서버로 메시지를 전송하는 함수
-   function sendMessage(){
+   function sendMessage(ws_path){
    var message = document.getElementById("textMessage");
    messageTextArea.value += "Send to Server => "+message.value+"\n";
    //웹소켓으로 textMessage객체의 값을 보낸다.
@@ -42,7 +42,7 @@ export const ws_connect = () => {
 }
 
 //###라이브 이미지 갱신
-export const ws_connect_test = () => {
+export const ws_connect_test = (ws_path) => {
     // 웹 서버를 접속한다.
    var webSocket = new WebSocket("ws://127.0.0.1:5535/live_img");
    // 웹 서버와의 통신을 주고 받은 결과를 출력할 오브젝트를 가져옵니다.
@@ -86,7 +86,7 @@ export const ws_connect_test = () => {
    }
 }
 
-export const ws_connect_sensor_test = () => {
+export const ws_connect_sensor_test = (ws_path) => {
     // 웹 서버를 접속한다.
    var webSocket = new WebSocket("ws://127.0.0.1:5535/live_sensor");
    // 웹 서버와의 통신을 주고 받은 결과를 출력할 오브젝트를 가져옵니다.
