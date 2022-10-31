@@ -1,0 +1,44 @@
+{% extends 'layout.html '%}
+
+{% block content %}
+    <div id="main_container">
+        <label id="message">{{test_message}}</label>
+        <div id="content_img">
+            <div class="content_title">
+                <label class="title_text">Live Camera Image</label>
+            </div>
+            <div class="img_direction"></div>
+            <!-- live img -->
+            <div class="img_section">
+                <img src="{{url_for('static', filename='image/Camera01/2022-09-23/2K/17/1_img_grab cnt_21673_2022-09-23 17-00-00-21.png')}}">
+                <img src="{{url_for('static', filename='image/Camera02/2022-09-23/2K/17/2img_grab cnt_21673_2022-09-23 17-00-00-21.png')}}">
+            </div>
+            <div class="img_direction"></div>
+            <!-- live img -->
+        </div>
+
+        <div id="sub_container">
+            <div id="content_info">
+                <div class="content_title">
+                    <label class="title_text">Information</label>
+                </div>
+                <label id="result_name"></label>
+                <label id="result_len"></label>
+                <label id="result_thc01"></label>
+                <label id="result_thc02"></label>
+                <label id="result_lc"></label>
+            </div>
+            <div id="content_graph">
+                <div class="content_title">
+                    <label class="title_text">Graph</label>
+                </div>
+                <canvas id="thickness_chart" width="650" height="350"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../static/js/compoments/main.mjs"></script>
+    
+
+{% endblock %}
+    

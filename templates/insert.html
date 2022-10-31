@@ -1,0 +1,76 @@
+{% extends 'layout.html '%}
+
+{% block content %}
+	
+
+
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            alert("{{messages[-1]}}")
+        </script>
+    {% endif %}
+{% endwith %}
+    
+    <div id="main_container">
+        <div id="content_insert">
+            <div class="content_title">
+                <label class="title_text">Insert</label>
+            </div>
+
+            <form id="form_insert" role="form" name="frm" method="post">
+                <div id="insert_input">
+                    <input id="input_id" type="number" name="value_id" value="" readonly>
+                    <label>순번 : </label>
+                    <input id="input_number" class="form-control f_small" type="number" name="value_number" placeholder="순번" class="form-control" autocomplete="off" value="{{last_Data}}" readonly>
+                    <label>검사 항목 : </label>
+                    <input id="input_model" type="text" class="form-control f_middle" name="value_model" placeholder="검사 항목" class="form-control" autocomplete="off">
+                </div>
+                <div id="insert_btn">
+                    <!-- <button id="btn_new" class="btn btn-success btn-lg" type="submit" name ="new" value="new" onclick="javascript: form.action='/new';">추가(순번 생성)</button> -->
+                    <button id="btn_new" class="btn btn-success btn-lg" type="submit" name ="new" value="new">추가(순번 생성)</button>
+                    <button id="btn_save" class="btn btn-success btn-lg" type="submit" name ="save" value="save">Model 생성</button>
+                    <button id="btn_save02" class="btn btn-success btn-lg" type="submit" name ="save02" value="save02">통판 생성</button>
+                    <button id="btn_delete" class="btn btn-danger btn-lg" type="submit" name ="delete" value="delete">삭제</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="content_table">
+            <div class="content_title">
+                <label class="title_text">[{{date}}] 검사 항목</label>
+            </div>
+                <table id="model_table" class="table">
+                    <thead>
+                        <tr>
+                            <th style="display: none"></th>
+                            <th scope="cols">순번</th>
+                            <th scope="cols">검사 항목</th>
+                            <th scope="cols">항목 상태</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in select_Data %}
+                        <tr>
+                            <td style="display:none">{{data.id}}</td>
+                            <td scope="row" style="width: 10%;">{{data.number}}</td>
+                            <td style="width: 60%;">{{data.model}}</td>
+                            <td style="width: 30%;"><button class="btn btn-default" >{{data.state}}</button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div id="content_clear">
+                    <form id="form_clear" role="form" action="/clear">
+                        <button id="btn_clear" class="btn btn-danger btn-lg btn-slg" type="submit" name="clear">초기화</button>
+                    </form>
+                </div>
+        </div>
+    </div>
+    <script type="module" src="../static/js/compoments/insert.mjs"></script>
+
+{% endblock %}
+
+    
+</body>

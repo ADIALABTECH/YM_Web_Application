@@ -1,0 +1,139 @@
+{% extends 'layout.html '%}
+
+{% block content %}
+
+    <div id="main_container">
+        <div id="content_search">
+            <form id="form_insert" role="form" name="frm" method="post">
+                <div id="search_control">
+                    <label class="search_text">날짜 : </label>
+                    <input id="input_date" style="float: left; cursor: pointer;" type="date" name="value_date" placeholder="날짜">
+                    <label class="search_text">검사 항목 : </label>
+                    <input id="input_model" style="float: left;" type="text" name="value_model" placeholder="모델" class="form-control" autocomplete="off">
+                    <label class="search_text">길이 지점 : </label>
+                    <input id="input_start" style="float: left;" type="text" name="value_start" placeholder="시작" class="form-control" autocomplete="off">
+                    <label class="search_text">~</label>
+                    <input id="input_end" style="float: left;" type="text" name="value_end" placeholder="종료" class="form-control" autocomplete="off">
+                    <button id="btn_search" type="submit" name="search" value="search" onclick="">검색</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="sub_container">
+            <div id="content_summary">
+                <div class="content_title">
+                    <label class="title_text">Summary</label>
+                </div>
+                <label id="summary_thick">두께 불량 : </label>
+                <label id="summary_surface">표면 불량 : </label>
+            </div>
+            <div id="content_table">
+                <div class="content_title">
+                    <label class="title_text">Table</label>
+                </div>
+                <div id="history_table">
+                    <table id="thickness_table" class="table_type">
+                    <thead>
+                        <tr>
+                            <th style="display: none"></th>
+                            <th scope="cols">날짜</th>
+                            <th scope="cols">검사 항목</th>
+                            <th scope="cols">길이 지점(m)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="display:none"></td>
+                            <td scope="row" style="width: 20%;">teste</td>
+                            <td style="width: 30%;">teste</td>
+                            <td style="width: 40%;">teste</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none"></td>
+                            <td scope="row" style="width: 20%;">teste</td>
+                            <td style="width: 30%;">teste</td>
+                            <td style="width: 40%;">teste</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none"></td>
+                            <td scope="row" style="width: 20%;">teste</td>
+                            <td style="width: 30%;">teste</td>
+                            <td style="width: 40%;">teste</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none"></td>
+                            <td scope="row" style="width: 20%;">teste</td>
+                            <td style="width: 30%;">teste</td>
+                            <td style="width: 40%;">teste</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none"></td>
+                            <td scope="row" style="width: 20%;">teste</td>
+                            <td style="width: 30%;">teste</td>
+                            <td style="width: 40%;">teste</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none"></td>
+                            <td scope="row" style="width: 20%;">teste</td>
+                            <td style="width: 30%;">teste</td>
+                            <td style="width: 40%;">teste</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none"></td>
+                            <td scope="row" style="width: 20%;">teste</td>
+                            <td style="width: 30%;">teste</td>
+                            <td style="width: 40%;">teste</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none"></td>
+                            <td scope="row" style="width: 20%;">teste</td>
+                            <td style="width: 30%;">teste</td>
+                            <td style="width: 40%;">teste</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none"></td>
+                            <td scope="row" style="width: 20%;">teste</td>
+                            <td style="width: 30%;">teste</td>
+                            <td style="width: 40%;">teste</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none"></td>
+                            <td scope="row" style="width: 20%;">teste</td>
+                            <td style="width: 30%;">teste</td>
+                            <td style="width: 40%;">teste</td>
+                        </tr>
+                        <tr>
+                            <td style="display:none"></td>
+                            <td scope="row" style="width: 20%;">teste</td>
+                            <td style="width: 30%;">teste</td>
+                            <td style="width: 40%;">teste</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                </div>
+            </div>
+        </div>
+        <div id="content_img">
+            <div class="content_title">
+                <label class="title_text">Result</label>
+            </div>
+            <div style="width: 100%; height: 45%; margin:5px 0;">
+                <div style="width: 32%; height: 100%; display: inline-block; background-color: white;"></div>
+                <div style="width: 32%; height: 100%; display: inline-block; background-color: slategray;"></div>
+                <div style="width: 32%; height: 100%; display: inline-block; background-color: white;"></div>
+            </div>
+            <div style="width: 100%; height: 45%;">
+                <div style="width: 32%; height: 100%; display: inline-block; background-color: slategray;"></div>
+                <div style="width: 32%; height: 100%; display: inline-block; background-color: white;"></div>
+                <div style="width: 32%; height: 100%; display: inline-block; background-color: slategray;"></div>
+            </div>
+        </div>
+        <div id="content_graph">
+            <div class="content_title">
+                <label class="title_text">Graph</label>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

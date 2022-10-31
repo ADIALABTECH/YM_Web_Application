@@ -1,0 +1,122 @@
+#main_container {
+    width: 1800px;
+    background-color: #333A40;
+    margin: 0 auto;
+    margin-top: 110px;
+    text-align: center;
+}
+
+.content_title {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    background-color: #465259;
+    border-radius: 2px;
+}
+
+label {
+    margin: 0;
+    float: left;
+    color: white;
+    font-size: 13px;
+}
+
+img {
+  cursor: pointer;
+}
+
+.title_text {
+    float: left;
+    margin: 0;
+    margin-left: 30px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#message {
+    width: 100%;
+    margin-block-end: 1.33em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#content_img {
+    width: 100%;
+    float: left;
+    height: 530px;
+    background-color: #333A40;
+    border-radius: 5px;
+    border: 1px solid #465259;
+    margin-bottom: 25px;
+}
+
+#content_img > .img_direction {
+    width:40px;
+    height:calc(100% - 50px);
+    background-color: #FBD202;
+    float:left;
+    color:#2F2F2F;
+}
+
+#content_img > .img_direction > i{
+    font-size:35px;
+    text-align:center;
+}
+
+#content_img > .img_section {
+    width:calc(100% - 80px);
+    height:calc(100% - 50px);
+    float:left;
+    color:#2F2F2F;
+}
+
+#content_img > .img_section > img {
+    float:left;
+    width:50%;
+    height:100%;
+}
+
+
+
+#sub_container {
+    width: 100%;
+    height: calc(100vh - 775px);
+    float: left;
+    margin-left: 0%;
+    display:flex;
+}
+
+#result_name, #result_len, #result_thc01, #result_thc02, #result_lc {
+    width: 33%;
+    margin-block-start: 1.3em;
+    margin-block-end: 1.3em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+#content_info {
+    flex:1;
+    height: 100%;
+    background-color: #333A40;
+    border-radius: 5px;
+    border: 1px solid #465259;
+    text-align: center;
+    margin-right:10px;
+}
+
+#content_graph {
+    flex:1;
+    height: 100%;
+    float: left;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #465259;
+}
+
+#thickness_chart {
+    margin-top: 30px;
+}
