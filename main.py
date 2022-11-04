@@ -236,7 +236,8 @@ def insert():
     select_Data = Data().selectData()
     now = datetime.datetime.now()
     date = now.strftime('%Y-%m-%d')
-    return render_template("insert.html", date=date, select_Data=select_Data)
+    ws_loading = config.WsPath_showLive;
+    return render_template("insert.html", date=date, select_Data=select_Data, ws = ws_loading)
 
 # 검사 결과 조회 페이지
 @app.route('/history')

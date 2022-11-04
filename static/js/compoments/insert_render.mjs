@@ -9,15 +9,31 @@ window.onload = () => {
         console.log(res);
         ReloadModelTable(res);
     })
+    AddEventInster;
 }
 
-document.querySelector("#btn_save").addEventListener("click", SaveCheck);
-document.querySelector("#btn_new").addEventListener("click", NewMIndex);
-document.querySelector("#btn_clear").addEventListener("click", ClearModel);
-document.querySelector("#btn_delete").addEventListener("click", DeleteModel);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //==========================================================================================================================
+
+function AddEventInster(){
+    document.querySelector("#btn_save").addEventListener("click", SaveCheck);
+    document.querySelector("#btn_new").addEventListener("click", NewMIndex);
+    document.querySelector("#btn_clear").addEventListener("click", ClearModel);
+    document.querySelector("#btn_delete").addEventListener("click", DeleteModel);
+}
 
 function ClearInputSection(result_data) {
     document.querySelector('#input_id').value = "";

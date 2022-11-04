@@ -34,6 +34,8 @@ function NewMIndex(event) {
             document.querySelector('#input_model').value = "";
             document.querySelector('#input_number').value = "";
             document.querySelector('#input_number').value = data.check_data;
+            //if 목록이 있다면 목록 선택 옵션 초기화
+            selectModelInit();
 
         }));
 }
@@ -176,14 +178,27 @@ export const ReloadModelTable = (data) => {
     var s_btn = document.querySelectorAll(".as_btn");
     s_btn.forEach(btn => {
         btn.addEventListener("click", (e) => {
+            selectModelInit();
             let tr_ch = e.target.parentNode.parentNode.querySelectorAll("td");
-            console.log(tr_ch[0].innerHTML, tr_ch[1].innerHTML, tr_ch[2].innerHTML);
+            //console.log(tr_ch[0].innerHTML, tr_ch[1].innerHTML, tr_ch[2].innerHTML);
             document.querySelector('#input_id').value = tr_ch[0].innerHTML;
             document.querySelector('#input_number').value = tr_ch[1].innerHTML;
             document.querySelector('#input_model').value = tr_ch[2].innerHTML;
+            btn.parentNode.parentNode.style.backgroundColor = "#FFBF00";
         });
     })
     
+}
+
+function selectModelInit(){
+    try {
+        var btn = document.querySelector(".as_btn");
+        let list = btn.parentNode.parentNode.parentNode.querySelectorAll("tr");
+        list.forEach(list_b => { list_b.style.backgroundColor = "transparent";})
+    }
+    catch (err) {
+        //nothing
+    }
 }
 
 

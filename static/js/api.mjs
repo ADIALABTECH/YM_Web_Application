@@ -49,7 +49,7 @@ export const ClearTodayModel = () => {
     }).then((res) => res.json());
 }
 
-//모델 입력 이후에 화면을 재 리로딩 하기 위한 함수
+//모델 삭제 이후에 화면을재 리로딩하기 위한 함수
 //여기에는 나중에 websocket 통신으로 수정 가능, 비가능한 모델들을 리로딩하는데에도 사용될것임
 export const DeleteModel = (model_name, model_index, value_id) => {
     return fetch(DELETE_SELECT_MODEL, {

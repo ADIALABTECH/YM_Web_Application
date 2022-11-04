@@ -4,11 +4,10 @@ import * as WS_API from "../websocketServer.mjs";
 
 window.onload = () => {
     WS_API.ws_connect_test(); //실시간 모니터링 코드
-    //WS_API.ws_connect_sensor_test();
     img_direction_icon_append();
 }
 
-//Live Camera 이미지 양옆 direction 방향 생성
+//Live Camera Section 양옆 direction 방향 생성
 export const img_direction_icon_append = () => {
     let img_d_section = document.querySelectorAll(".img_direction");
 
@@ -25,6 +24,7 @@ export const img_direction_icon_append = () => {
     })) ;
 }
 
+//Live Camera정보 실시간 렌더링(이름, 길이, 두께1, 두께2, light curtain, 사진01, 사진02)
 export const live_img_renewal = (cam01_path, cam02_path, m_len, m_thc01, m_thc02, m_lc) => {
     let cam = document.querySelector(".img_section").querySelectorAll("img");
     //모델명, 두께1-2, 길이, light curtain 받아옴
@@ -40,14 +40,8 @@ export const live_img_renewal = (cam01_path, cam02_path, m_len, m_thc01, m_thc02
     model_thc01.innerText="Model_thick01 : " + m_thc01;
     model_thc02.innerText="Model_thick02 : " + m_thc02;
     model_lc.innerText="Model_LC : " + m_lc;
-
-
 }
 
-export const live_model_info = () => {
-    //임베디드PC에서 전송하는 데이더 실시간 업로드
-
-}
 
 // 2022-09-26 일자로 코드 임시 이전
 /* <script type="text/javascript">

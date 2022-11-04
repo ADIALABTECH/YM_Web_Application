@@ -3,6 +3,8 @@
     background-color: #333A40;
     margin: 0 auto;
     margin-top: 110px;
+    height:auto;
+    overflow:hidden;
 }
 
 .content_title {
@@ -57,7 +59,10 @@ input {
     border-radius: 6px;
     border: 1px solid #465259;
     text-align: center;
+    height: auto;
+    overflow: hidden;
 }
+
 
 #search_control {
     width: 70%;
@@ -65,6 +70,19 @@ input {
     margin: 0 auto;
     line-height: 40px;
     margin-top: 20px;
+    display: flex;
+}
+
+#search_control > input{
+    flex:1;
+}
+
+#input_date {
+    height: 35px;
+}
+
+#form_insert{
+    padding-bottom:15px;
 }
 
 #btn_search {
@@ -73,7 +91,7 @@ input {
     color: #fff;
     border: none;
     position: relative;
-    height: 40px;
+    height: 35px;
     font-size: 14px;
     padding: 0 2em;
     cursor: pointer;
