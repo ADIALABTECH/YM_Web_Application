@@ -6,6 +6,8 @@ import json
 from time import time, sleep
 from random import random
 from config import config;
+from decimal import *;
+
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.mjs')
@@ -16,6 +18,16 @@ app.secret_key = "Master_Key"
 
 DB_flag = 0
 
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        # 👇️ if passed in object is instance of Decimal
+        # convert it to a string
+        if isinstance(obj, Decimal):
+            return str(obj)
+        elif isinstance(obj, datetime.date):
+            return str(obj)
+        # 👇️ otherwise use the default behavior
+        return json.JSONEncoder.default(self, obj)
 
 # 검사 항목 관리 CLASS (SELECT, INSERT, DELETE) --
 class Data:
@@ -126,6 +138,43 @@ class Data:
 
         db.commit()
         db.close()
+        
+    #조건별 검사 이력내역 조회
+    #input : 모델명, 검색 시작 날짜, 검색 종료 날짜, 검색 시작 거리, 검색 종료 거리
+    #output : 검색 결과 갯수, 페이지(검색 결과 갯수 / 콘텐츠 갯수), 총 페이지, 페이지당 콘텐츠 갯수
+    #           콘텐츠 리스트 : { id, model명, 검사 결과, 이미지01, 이미지02, 날짜, 그래프 정보 }
+    #           요약데이터 { 표면불량, 두께 불량 }
+    def searchHistory(self, model_name, start_date, end_date, start_lange, end_lange, page):
+        db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
+        curs = db.cursor()
+
+        sql = '''SELECT * FROM tb_model_measurement_list
+        WHERE model_name=%s AND 
+        DATE(datetime) BETWEEN %s AND %s AND
+        lange BETWEEN %s AND %s order by id limit 0,5000'''
+        
+        curs.execute(sql, (model_name, start_date, end_date, start_lange, end_lange))
+        #rows = json.dumps(curs.fetchall(), cls=DecimalEncoder)
+        rows = curs.fetchall()
+        result = {'content':'null'}
+        b_result = []
+        for e in rows:
+            dic = {'idx' : str(e[0]),
+                    'model_nm' : str(e[1]),
+                    'thick01' : str(e[2]),
+                    'thick02' : str(e[3]),
+                    'LC' : str(e[4]),
+                    'lange' : str(e[5]),
+                    'img01' : str(e[6]),
+                    'img02' : str(e[7]),
+                    'date' : str(e[8]),
+                  }
+            b_result.append(dic)
+        
+        result['content'] = b_result
+        #result = rows;
+        return result;
+
 
 #데이터 분석 결과 노출 / 실시간 및 비동기 작업 필요
 #main에서 호출됨
@@ -317,6 +366,16 @@ def clear():
         return "200";
     except:
         return "400";
+    
+    
+@app.route('/search_history', methods=['POST'])
+def history_search():
+    req_data = request.get_json();
+    print(req_data);
+    result = Data().searchHistory(req_data['model_name'], req_data['start_date'], req_data['end_date'], req_data['start_lange'], req_data['end_lange'], req_data['now_page'])
+    print(result);
+    return json.dumps(result, cls=DecimalEncoder);
+    
 
 # if __name__ == "__main__":
-    #app.run(host='127.0.0.1', port=5000, debug=True)
+    #app.run(host='127.0.0.1', port=5000, debug=True);

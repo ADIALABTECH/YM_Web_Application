@@ -10,8 +10,4 @@ __pycache__/
 .idea/
 
 #static img file
-static/image/Camera01/
-static/image/Camera02/
-static/image/Camera01.zip
-static/image/Camera02.zip
-static/image_original_backup/
+static/image/*

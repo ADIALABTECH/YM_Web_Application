@@ -1,46 +1,46 @@
-
 import * as API from "../api.mjs";
-import * as WS_API from "../websocketServer.mjs";
+//import * as WS_API from "../websocketServer.mjs";
 
 window.onload = () => {
-    WS_API.ws_connect();
-
-    API.ReloadInsert().then((res) => {
-        console.log(res);
-        ReloadModelTable(res);
-    });
-
-    document.querySelector("#btn_save").addEventListener("click", SaveCheck);
-    document.querySelector("#btn_save02").addEventListener("click", SaveMedium);
-    document.querySelector("#btn_new").addEventListener("click", NewMIndex);
-    document.querySelector("#btn_clear").addEventListener("click", ClearModel);
-    document.querySelector("#btn_delete").addEventListener("click", DeleteModel);
+    //WS_API.ws_connect();
+    
+    //API.ReloadInsert().then((res) => {
+    //     console.log(res);
+    //     ReloadModelTable(res);
+    // })
+    AddEventInster();
 }
-
-
 
 
 //==========================================================================================================================
-//새로운 모델 또는 통판 입력시 다음의 FLOW를 따른다.
-//1. 순번 생성
-//2-1. 이름 입력 - 생성 Btn Click => 모델 입력
-//2-2. 통판 생성 Btn Click => 통판 입력
 
-//새로운 순번 생성
-function NewMIndex(event) {
-        event.preventDefault();
-        API.NewModelIndex().then((data => {
-            document.querySelector('#input_id').value = "";
-            document.querySelector('#input_model').value = "";
-            document.querySelector('#input_number').value = "";
-            document.querySelector('#input_number').value = data.check_data;
-            //if 목록이 있다면 목록 선택 옵션 초기화
-            selectModelInit();
-
-        }));
+function AddEventInster(){
+    document.querySelector("#btn_search").addEventListener("click", dataSearch);
 }
 
-//모델 입력 초기화
+function dataSearch(event) {
+    event.preventDefault();
+    let input_list = document.querySelector("#search_control").querySelectorAll('input');
+    API.SearchHistory(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, 0).then((res) =>{
+        console.log(res);
+        display_search_history(res);
+    });
+}
+
+function display_search_history(data){
+    let table = document.createElement('table');
+    table.className='table';
+    let table_text = "<table class='table'>" + "<tr>"
+                     "<th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>";                
+    console.log(data.content[0]);
+    data.content.forEach((row)=> {
+        table_text += "<tr><td>" + row.model_nm + "</td></tr>";
+    });
+    table_text += "</table>";
+    document.body.innerHTML = table_text;
+}
+
+
 function ClearModel(evnet) {
     evnet.preventDefault();
     if (confirm("정말 오늘자 입력하신 작업모델을 모두 삭제하시겠습니까?\n*진행중이거나 검사가 완료된 항목은 지워지지 않습니다.") == true){    //확인
@@ -48,6 +48,9 @@ function ClearModel(evnet) {
             if(res === 200) {
                 alert("오늘자 검사되지 않은 입력모델이 모두 삭제되었습니다.");
                 location.reload();
+                // API.ReloadInsert().then((res) => {
+                //     ReloadModelTable(res);
+                // })
             }
         })
         
@@ -57,7 +60,6 @@ function ClearModel(evnet) {
     
 }
 
-//선택한 모델 삭제
 function DeleteModel(event) {
     event.preventDefault();
     if ( document.querySelector('#input_number').value === "" || document.querySelector('#input_model').value === "" || document.querySelector('#input_id').value === ""){
@@ -92,7 +94,6 @@ function DeleteModel(event) {
 
 //==========================================================================================================================
 
-//검사할 모델 생성
 function SaveCheck(event) {
     event.preventDefault();
     if ( document.querySelector('#input_number').value === "" || document.querySelector('#input_model').value === ""){
@@ -120,37 +121,7 @@ function SaveCheck(event) {
     
 };
 
-//검사시료 중간의 통판 생성
-function SaveMedium(event) {
-    event.preventDefault();
-    if ( document.querySelector('#input_number').value === "" ){
-        alert("데이터(순번)를 입력하세요.");
-        return false;
-    }
-    else {
-        let form = document.querySelector('#form_insert');
-        let m_num = form.value_number.value;
-        let m_name = form.value_model.value;
-        let origin_m_num = form.value_id.value;
-        API.model_save("Mediator", m_num, origin_m_num).then((res) => {
-            if(res === 200) {
-                //console.log("POST then Testing1")
-                API.ReloadInsert().then((res) => {
-                    console.log(res);
-                    ReloadModelTable(res);
-                })
-                document.querySelector('#input_id').value = "";
-                document.querySelector('#input_number').value = "";
-                document.querySelector('#input_model').value = "";
-            }
-        });
-    }
-    
-};
-
-
-//검사목록 리스트 재갱신
-export const ReloadModelTable = (data) => {
+const ReloadModelTable = (data) => {
     let table_body = document.querySelector("#model_table").querySelector("tbody");
     table_body.querySelectorAll("tr").forEach(row =>{ row.remove(); })
     data.forEach(arr => {
@@ -178,31 +149,15 @@ export const ReloadModelTable = (data) => {
     var s_btn = document.querySelectorAll(".as_btn");
     s_btn.forEach(btn => {
         btn.addEventListener("click", (e) => {
-            selectModelInit();
             let tr_ch = e.target.parentNode.parentNode.querySelectorAll("td");
-            //console.log(tr_ch[0].innerHTML, tr_ch[1].innerHTML, tr_ch[2].innerHTML);
+            console.log(tr_ch[0].innerHTML, tr_ch[1].innerHTML, tr_ch[2].innerHTML);
             document.querySelector('#input_id').value = tr_ch[0].innerHTML;
             document.querySelector('#input_number').value = tr_ch[1].innerHTML;
             document.querySelector('#input_model').value = tr_ch[2].innerHTML;
-            btn.parentNode.parentNode.style.backgroundColor = "#FFBF00";
         });
     })
     
 }
-//다음의 상황에서 사용됨
-// 1. 입력 모델을 선택할 경우 전체리스트를 한번 초기화 시킴
-function selectModelInit(){
-    try {
-        var btn = document.querySelector(".as_btn");
-        let list = btn.parentNode.parentNode.parentNode.querySelectorAll("tr");
-        list.forEach(list_b => { list_b.style.backgroundColor = "transparent";})
-    }
-    catch (err) {
-        //nothing
-    }
-}
-
-
 
 
 

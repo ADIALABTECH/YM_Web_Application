@@ -3,7 +3,7 @@
 import * as WS_API from "../websocketServer.mjs";
 
 window.onload = () => {
-    WS_API.ws_connect_test(); //실시간 모니터링 코드
+    WS_API.ws_coonnect_live_inspector(); //실시간 모니터링 코드
     img_direction_icon_append();
 }
 
@@ -25,7 +25,7 @@ export const img_direction_icon_append = () => {
 }
 
 //Live Camera정보 실시간 렌더링(이름, 길이, 두께1, 두께2, light curtain, 사진01, 사진02)
-export const live_img_renewal = (cam01_path, cam02_path, m_len, m_thc01, m_thc02, m_lc) => {
+export const live_img_renewal = (cam01_path, cam02_path, m_len, m_thc01, m_thc02, m_lc, m_nm) => {
     let cam = document.querySelector(".img_section").querySelectorAll("img");
     //모델명, 두께1-2, 길이, light curtain 받아옴
     let model_nm = document.querySelector("#result_name");
@@ -35,7 +35,7 @@ export const live_img_renewal = (cam01_path, cam02_path, m_len, m_thc01, m_thc02
     let model_lc = document.querySelector("#result_lc");
     cam[0].src = cam01_path;
     cam[1].src = cam02_path;
-    model_nm.innerText="Model_name : " + "N/A";
+    model_nm.innerText="Model_name : " + m_nm;
     model_len.innerText="Model_length : " + m_len;
     model_thc01.innerText="Model_thick01 : " + m_thc01;
     model_thc02.innerText="Model_thick02 : " + m_thc02;
