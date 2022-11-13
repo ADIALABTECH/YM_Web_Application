@@ -178,6 +178,10 @@ input {
     background-color: #465259;
 }
 
+#history_table > table {
+    color:white;
+}
+
 table.table_type {
     width: 90%;
     border-collapse: collapse;

@@ -23,21 +23,29 @@ function dataSearch(event) {
     let input_list = document.querySelector("#search_control").querySelectorAll('input');
     API.SearchHistory(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, 0).then((res) =>{
         console.log(res);
+        alert("search");
         display_search_history(res);
     });
 }
 
 function display_search_history(data){
+    let tb = document.querySelector("#history_table");
     let table = document.createElement('table');
     table.className='table';
     let table_text = "<table class='table'>" + "<tr>"
                      "<th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>";                
     console.log(data.content[0]);
     data.content.forEach((row)=> {
-        table_text += "<tr><td>" + row.model_nm + "</td></tr>";
+        table_text += "<tr><td>" + row.model_nm + "</td>" + 
+        "<td>1</td>" +
+        "<td>2</td>" +
+        "<td>3</td>" +
+        "<td>4</td>" +
+        "<td>5</td>" +
+        "</tr>";
     });
     table_text += "</table>";
-    document.body.innerHTML = table_text;
+    tb.innerHTML = table_text;
 }
 
 
