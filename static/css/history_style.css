@@ -65,7 +65,7 @@ input {
 
 
 #search_control {
-    width: 70%;
+    width: 90%;
     height: 40px;
     margin: 0 auto;
     line-height: 40px;
@@ -74,6 +74,21 @@ input {
 }
 
 #search_control > input{
+    margin-left:10px;
+    margin-right:10px;
+    flex:1;
+}
+
+
+#search_control > .l_label{
+    margin-left: 5px;
+    margin-right: 5px;
+    flex: 0.5;
+}
+
+#search_control > button{
+    margin-left:10px;
+    margin-right:10px;
     flex:1;
 }
 
@@ -136,7 +151,18 @@ input {
 }
 
 #content_summary {
-    width: 100%;
+    width: 49%;
+    height: 25%;
+    float: left;
+    background-color: #333A40;
+    border-radius: 6px;
+    border: 1px solid #465259;
+    text-align: center;
+    margin-right:2%;
+}
+
+#content_thick_graph {
+    width: 49%;
     height: 25%;
     float: left;
     background-color: #333A40;
@@ -153,6 +179,10 @@ input {
     margin-top: 5%;
     border-radius: 6px;
     border: 1px solid #465259;
+}
+
+#content_table > .table {
+    color:white;
 }
 
 #summary_thick, #summary_surface {
@@ -241,6 +271,19 @@ table.table_type .even {
     border-radius: 6px;
     border: 1px solid #465259;
     text-align: center;
+}
+
+#content_img > .img_section {
+    width:calc(100%);
+    height:calc(100% - 50px);
+    float:left;
+    color:#2F2F2F;
+}
+
+#content_img > .img_section > img {
+    float:left;
+    width:50%;
+    height:100%;
 }
 
 #content_graph {

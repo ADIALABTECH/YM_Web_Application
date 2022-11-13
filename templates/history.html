@@ -6,16 +6,17 @@
         <div id="content_search">
             <form id="form_insert" role="form" name="frm" method='post'>
                 <div id="search_control">
-                    <label class="search_text">검사 항목 : </label>
-                    <input id="input_model" style="float: left;" type="text" name="value_model" placeholder="모델" class="form-control" autocomplete="off">
-                    <label class="search_text">날짜 : </label>
-                    <input id="input_date1" style="float: left; cursor: pointer;" type="date" name="value_date" placeholder="날짜">
-                    <input id="input_date2" style="float: left; cursor: pointer;" type="date" name="value_date" placeholder="날짜">
-                    <label class="search_text">길이 지점 : </label>
-                    <input id="input_start" style="float: left;" type="text" name="value_start" placeholder="시작" class="form-control" autocomplete="off">
+                    <label class="search_text l_label">검사 항목 : </label>
+                    <input id="input_model" style="float: left;" type="text" name="value_model" placeholder="모델" class="form-control" autocomplete="off" value="11111">
+                    <label class="search_text l_label" >날짜 : </label>
+                    <input id="input_date1" style="float: left; cursor: pointer;" type="date" name="value_date" placeholder="날짜" value="2022-11-11">
+                    <input id="input_date2" style="float: left; cursor: pointer;" type="date" name="value_date" placeholder="날짜" value="2022-11-11">
+                    <label class="search_text l_label">길이 지점 : </label>
+                    <input id="input_start" style="float: left;" type="text" name="value_start" placeholder="시작" class="form-control" autocomplete="off" value="0">
                     <label class="search_text">~</label>
-                    <input id="input_end" style="float: left;" type="text" name="value_end" placeholder="종료" class="form-control" autocomplete="off">
+                    <input id="input_end" style="float: left;" type="text" name="value_end" placeholder="종료" class="form-control" autocomplete="off" value="50000">
                     <button id="btn_search" type="button" name="search" value="search">검색</button>
+                    <button id="btn_export" type="button" name="-" value="" class="btn btn-success btn-sm" style="height: 35px; padding: 0.5rem;">Excel Export</button>
                 </div>
             </form>
         </div>
@@ -25,37 +26,48 @@
                 <div class="content_title">
                     <label class="title_text">Summary</label>
                 </div>
-                <label id="summary_thick">두께 불량 : </label>
-                <label id="summary_surface">표면 불량 : </label>
+                <label id="summary_thick">두께 불량 : N 건</label>
+                <label id="summary_surface">표면 불량 : N 건</label>
             </div>
+
+            <div id="content_thick_graph">
+                <div class="content_title">
+                    <label class="title_text">thick graph</label>
+                    <label id="summary_surface">데이터가 없습니다.</label>
+                </div>
+                
+            </div>
+
             <div id="content_table">
                 <div class="content_title">
                     <label class="title_text">Table</label>
+                    
+                                     
                 </div>
                 <!-- 검색 테이블-->
-                <div id="history_table"></div>
+                <div id="history_table">
+                    <table class="table" style="color:white">
+                        <tr>
+                            <th>ID</th><th>모델명</th><th>두께01</th><th>두께02</th><th>거리</th><th>NG</th><th>시간</th>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
         <div id="content_img">
             <div class="content_title">
                 <label class="title_text">Result</label>
             </div>
-            <div style="width: 100%; height: 45%; margin:5px 0;">
-                <div style="width: 32%; height: 100%; display: inline-block; background-color: white;"></div>
-                <div style="width: 32%; height: 100%; display: inline-block; background-color: slategray;"></div>
-                <div style="width: 32%; height: 100%; display: inline-block; background-color: white;"></div>
-            </div>
-            <div style="width: 100%; height: 45%;">
-                <div style="width: 32%; height: 100%; display: inline-block; background-color: slategray;"></div>
-                <div style="width: 32%; height: 100%; display: inline-block; background-color: white;"></div>
-                <div style="width: 32%; height: 100%; display: inline-block; background-color: slategray;"></div>
+            <div class="img_section">
+                <img src="{{url_for('static', filename='image/Camera01/2022-09-23/2K/17/1_img_grab cnt_21673_2022-09-23 17-00-00-21.png')}}">
+                <img src="{{url_for('static', filename='image/Camera02/2022-09-23/2K/17/2img_grab cnt_21673_2022-09-23 17-00-00-21.png')}}">
             </div>
         </div>
-        <div id="content_graph">
+        <!--<div id="content_graph">
             <div class="content_title">
                 <label class="title_text">Graph</label>
             </div>
-        </div>
+        </div>-->
     </div>
 
     <script type="module" src="../static/js/compoments/history.mjs"></script>
