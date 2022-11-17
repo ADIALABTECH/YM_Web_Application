@@ -73,7 +73,7 @@ export const DeleteModel = (model_name, model_index, value_id) => {
 //그래프 정보는 어떻게 할지 고민해야함
 //여기에는 나중에 websocket 통신으로 수정 가능, 비가능한 모델들을 리로딩하는데에도 사용될것임
 //파라미터로 쓰이는 page의 경우 default 0으로 지정됨
-export const SearchHistory = (model_name, start_date, end_date, start_lange, end_lange, page) => {
+export const SearchHistory = (model_name, start_date, end_date, start_lange, end_lange, id, page) => {
     return fetch(SEARCH_HISTORY, {
         method: 'POST',
         headers: {'content-type': 'application/json'},
@@ -83,7 +83,8 @@ export const SearchHistory = (model_name, start_date, end_date, start_lange, end
             "end_date" :  end_date,
             "start_lange" :  start_lange,
             "end_lange" :  end_lange,
-            "now_page" : page
+            "id" : id,
+            "now_page" : page,
         })
     }).then((res) => res.json());
 

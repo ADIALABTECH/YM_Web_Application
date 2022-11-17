@@ -3,12 +3,16 @@ import * as API from "../api.mjs";
 import * as WS_API from "../websocketServer.mjs";
 
 window.onload = () => {
-    WS_API.ws_connect();
+    WS_API.ws_connect_change_model();
 
     API.ReloadInsert().then((res) => {
         console.log(res);
         ReloadModelTable(res);
     });
+
+    setTimeout(() => {
+        window.location.reload()
+    },300000);
 
     document.querySelector("#btn_save").addEventListener("click", SaveCheck);
     document.querySelector("#btn_save02").addEventListener("click", SaveMedium);
@@ -160,11 +164,11 @@ export const ReloadModelTable = (data) => {
             btn_state = "btn btn-default as_btn";
         }
         else if(arr["state"] === '진행중'){
-            btn_state = "btn btn-default ads_btn";
+            btn_state = "btn btn-default ads_btn pc_work";
             able = "disabled";
         }
         else if(arr["state"] === '완료'){
-            btn_state = "btn btn-default ads_btn";
+            btn_state = "btn btn-default ads_btn end_work";
             able = "disabled";
         }
         let tr = document.createElement("tr");

@@ -144,21 +144,34 @@ class Data:
     #output : 검색 결과 갯수, 페이지(검색 결과 갯수 / 콘텐츠 갯수), 총 페이지, 페이지당 콘텐츠 갯수
     #           콘텐츠 리스트 : { id, model명, 검사 결과, 이미지01, 이미지02, 날짜, 그래프 정보 }
     #           요약데이터 { 표면불량, 두께 불량 }
-    def searchHistory(self, model_name, start_date, end_date, start_lange, end_lange, page):
+    #nPage를 통해 limit controll
+    # => nPage가 1이면 5000 ~ 10000 쿼리 결과 return
+    #nPage는 항상 default 1의 값으로 시작한다.
+    def searchHistory(self, model_name, start_date, end_date, start_lange, end_lange, id, page):
+        limit_qry_row = 1500;
         db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
         curs = db.cursor()
-
-        sql = '''SELECT * FROM tb_model_measurement_list
-        WHERE model_name=%s AND 
-        DATE(datetime) BETWEEN %s AND %s AND
-        lange BETWEEN %s AND %s order by id limit 0,5000'''
+        if(page > 0) :
+            sql = '''SELECT * FROM tb_model_measurement_list
+            WHERE model_name=%s AND 
+            DATE(datetime) BETWEEN %s AND %s AND
+            lange BETWEEN %s AND %s AND
+            id > %s order by id asc limit %s'''    
+        elif(page < 0) :
+            sql = '''SELECT * FROM tb_model_measurement_list
+            WHERE model_name=%s AND 
+            DATE(datetime) BETWEEN %s AND %s AND
+            lange BETWEEN %s AND %s AND
+            id < %s order by id asc limit %s'''        
         
-        curs.execute(sql, (model_name, start_date, end_date, start_lange, end_lange))
+        curs.execute(sql, (model_name, start_date, end_date, start_lange, end_lange, id, limit_qry_row))
         #rows = json.dumps(curs.fetchall(), cls=DecimalEncoder)
         rows = curs.fetchall()
         result = {'content':'null'}
+        result02 = {}
         b_result = []
-        for e in rows:
+        paging = 1;
+        for idx, e in enumerate(rows, start=1):
             dic = {'idx' : str(e[0]),
                     'model_nm' : str(e[1]),
                     'thick01' : str(e[2]),
@@ -170,8 +183,12 @@ class Data:
                     'date' : str(e[8]),
                   }
             b_result.append(dic)
+            if(idx % 100 == 0):
+                result02[str(paging)] = b_result
+                paging+=1
+                b_result = []
         
-        result['content'] = b_result
+        result['content'] = result02
         #result = rows;
         return result;
 
@@ -372,7 +389,7 @@ def clear():
 def history_search():
     req_data = request.get_json();
     print(req_data);
-    result = Data().searchHistory(req_data['model_name'], req_data['start_date'], req_data['end_date'], req_data['start_lange'], req_data['end_lange'], req_data['now_page'])
+    result = Data().searchHistory(req_data['model_name'], req_data['start_date'], req_data['end_date'], req_data['start_lange'], req_data['end_lange'], req_data['id'], req_data['now_page'])
     print(result);
     return json.dumps(result, cls=DecimalEncoder);
     

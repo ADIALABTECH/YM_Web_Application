@@ -7,14 +7,14 @@
             <form id="form_insert" role="form" name="frm" method='post'>
                 <div id="search_control">
                     <label class="search_text l_label">검사 항목 : </label>
-                    <input id="input_model" style="float: left;" type="text" name="value_model" placeholder="모델" class="form-control" autocomplete="off" value="11111">
+                    <input id="input_model" style="float: left;" type="text" name="value_model" placeholder="모델" class="form-control" autocomplete="off" value="ModelData">
                     <label class="search_text l_label" >날짜 : </label>
-                    <input id="input_date1" style="float: left; cursor: pointer;" type="date" name="value_date" placeholder="날짜" value="2022-11-11">
-                    <input id="input_date2" style="float: left; cursor: pointer;" type="date" name="value_date" placeholder="날짜" value="2022-11-11">
+                    <input id="input_date1" style="float: left; cursor: pointer;" type="date" name="value_date" placeholder="날짜" value="2022-11-14">
+                    <input id="input_date2" style="float: left; cursor: pointer;" type="date" name="value_date" placeholder="날짜" value="2022-11-14">
                     <label class="search_text l_label">길이 지점 : </label>
                     <input id="input_start" style="float: left;" type="text" name="value_start" placeholder="시작" class="form-control" autocomplete="off" value="0">
                     <label class="search_text">~</label>
-                    <input id="input_end" style="float: left;" type="text" name="value_end" placeholder="종료" class="form-control" autocomplete="off" value="50000">
+                    <input id="input_end" style="float: left;" type="text" name="value_end" placeholder="종료" class="form-control" autocomplete="off" value="100000">
                     <button id="btn_search" type="button" name="search" value="search">검색</button>
                     <button id="btn_export" type="button" name="-" value="" class="btn btn-success btn-sm" style="height: 35px; padding: 0.5rem;">Excel Export</button>
                 </div>
@@ -40,7 +40,13 @@
 
             <div id="content_table">
                 <div class="content_title">
-                    <label class="title_text">Table</label>
+                    <label class="title_text" style="width:93%">Table
+                        <p style="float:right; margin-bottom:0px;">
+                            <i id="search_prev" class="bi bi-arrow-bar-left pagenate_next" style="visibility: hidden;">이전검색</i>
+                            <i id="search_next" class="bi bi-arrow-bar-right pagenate_next" style="visibility: hidden;">다음검색</i>
+                        </p>
+                        
+                    </label>
                     
                                      
                 </div>
@@ -52,6 +58,9 @@
                         </tr>
                     </table>
                 </div>
+                <div class="pagenate">
+
+                </div>
             </div>
         </div>
         <div id="content_img">
@@ -59,8 +68,8 @@
                 <label class="title_text">Result</label>
             </div>
             <div class="img_section">
-                <img src="{{url_for('static', filename='image/Camera01/2022-09-23/2K/17/1_img_grab cnt_21673_2022-09-23 17-00-00-21.png')}}">
-                <img src="{{url_for('static', filename='image/Camera02/2022-09-23/2K/17/2img_grab cnt_21673_2022-09-23 17-00-00-21.png')}}">
+                <img src="{{url_for('static', filename='image/no_img.jpg')}}">
+                <img src="{{url_for('static', filename='image/no_img.jpg')}}">
             </div>
         </div>
         <!--<div id="content_graph">

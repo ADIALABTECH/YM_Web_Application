@@ -274,3 +274,12 @@ label {
     width: 100%;
     transition: 800ms ease all;
 }
+
+.end_work {
+    background-color: #04B45F !important;;
+    color:white !important;
+}
+.pc_work {
+    background-color: #2E2EFE !important;
+    color:white !important;
+}

@@ -173,10 +173,10 @@ input {
 
 #content_table {
     width: 100%;
-    height: 70%;
+    height: 73%;
     float: left;
     background-color: #333A40;
-    margin-top: 5%;
+    margin-top: 2%;
     border-radius: 6px;
     border: 1px solid #465259;
 }
@@ -196,7 +196,7 @@ input {
 }
 
 #history_table {
-     height: 440px;
+     height: 412px;
      overflow: auto;
 }
 
@@ -205,11 +205,62 @@ input {
 }
 
 #history_table::-webkit-scrollbar-thumb {
-    background-color: #465259;
+    /* background-color: #465259; */
+    background-color: #FACC2E;
+    
+}
+
+#content_table > .pagenate {
+    width:100%;
+    height:44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagenate_next {
+    background-color: white; 
+    color:#272727;
+    padding: 5px 9px 5px 7px; 
+    border-radius: 3px; 
+    cursor:pointer;
+}
+
+.pagenate_prev {
+    background-color: white; 
+    color:#272727;
+    padding: 5px 9px 5px 7px; 
+    border-radius: 3px; 
+    cursor:pointer;
+}
+
+#content_table > .pagenate > a {
+    border-radius: 5px;
+    color:#2F2F2F;
+    font-size: 17px;
+    font-weight: bold;
+    background-color: white;
+    padding: 5px 9px 5px 9px;
+    cursor: pointer;
+    margin:3px;
+}
+
+.row_data {
+    font-size:14px;
+    height:33px;
+    line-height: 33px;
+    cursor: pointer;
+}
+
+.row_data:hover {
+    background-color: #477fd3;
 }
 
 #history_table > table {
     color:white;
+    font-size:15px;
+    height:auto;
+    overflow:scroll;
 }
 
 table.table_type {

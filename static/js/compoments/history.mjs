@@ -1,13 +1,15 @@
 import * as API from "../api.mjs";
 //import * as WS_API from "../websocketServer.mjs";
-
+let search_id = 1;
+let search_page = 1;
+let search_total_page = 0;
+let search_arr = {};
+let search_pum = 1500;
 window.onload = () => {
-    //WS_API.ws_connect();
-    
-    //API.ReloadInsert().then((res) => {
-    //     console.log(res);
-    //     ReloadModelTable(res);
-    // })
+    let today = new Date();   
+    let input_list = document.querySelector("#search_control").querySelectorAll('input');
+    input_list[1].value = today.toLocaleDateString().replace(/\./gi,"-").replace(/ /gi,"").substring(0, 10);
+    input_list[2].value = today.toLocaleDateString().replace(/\./gi,"-").replace(/ /gi,"").substring(0, 10);
     AddEventInster();
 }
 
@@ -16,29 +18,78 @@ window.onload = () => {
 
 function AddEventInster(){
     document.querySelector("#btn_search").addEventListener("click", dataSearch);
+    document.querySelector('#search_next').addEventListener('click',dataSearch);
+    document.querySelector('#search_prev').addEventListener('click',dataSearch);
 }
 
 function dataSearch(event) {
+    document.querySelector('#search_next').style.visibility = 'visible';
+    document.querySelector('#search_prev').style.visibility = 'visible';
     event.preventDefault();
-    let input_list = document.querySelector("#search_control").querySelectorAll('input');
-    API.SearchHistory(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, 0).then((res) =>{
-        console.log(res);
-        alert("search");
-        display_search_history(res);
-    });
+    if(event.target.id === "search_next") {
+        let input_list = document.querySelector("#search_control").querySelectorAll('input');
+        API.SearchHistory(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, search_id, 1).then((res) =>{
+            alert("search");
+            search_arr = res;
+            display_search_history(res);
+        });
+        
+    }
+    else if(event.target.id === "search_prev"){
+        let input_list = document.querySelector("#search_control").querySelectorAll('input');
+        API.SearchHistory(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, search_id, -1).then((res) =>{
+            alert("search");
+            search_arr = res;
+            display_search_history(res);
+        });
+    }
+    else{
+        let input_list = document.querySelector("#search_control").querySelectorAll('input');
+        API.SearchHistory(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, search_id, 1).then((res) =>{
+            alert("search");
+            search_arr = res;
+            display_search_history(res);
+        });
+    }
+   
 }
 
-function display_search_history(data){
+
+function display_search_history(res_data){
     let tb = document.querySelector("#history_table");
     let data_tb = document.querySelectorAll('.row_data');
-
-    data_tb.forEach((data => {
-        data.remove();
-    }))
+    let pagenate = document.querySelector(".pagenate");
+    let pagenum = document.querySelector(".pagenate").querySelectorAll('a');
     let table = document.querySelector(".table");
-    console.log(data.content[0]);
-    
-    data.content.forEach((row)=> {
+    let s_next_btn = document.querySelector('#search_next');
+    let s_prev_btn = document.querySelector('#search_prev');
+
+    init_pagenate_row(pagenum);
+    init_table_row(data_tb);
+
+    //최초 1페이지 랜딩 및 table row 당 addevent listener
+    create_table_row(search_arr.content[1], table);
+    //pagenate 생성 및 addevent listener
+    create_pagenate(pagenate, Object.keys(search_arr.content).length, table);
+    //페이지 이동 버튼
+    // s_prev_btn.innerHTML=` 이전검색`;
+    // s_next_btn.innerHTML=` 다음검색(${(search_page)*search_pum} ~ ${(search_page+1)*search_pum})`;
+}
+
+
+//====================================================================================================================================
+const init_table_row = (table_data) => {
+    table_data.forEach((data => { data.remove(); }));
+}
+
+const init_pagenate_row = (pagenate_data) => {
+    pagenate_data.forEach((data => { data.remove(); }));
+}
+
+const create_table_row = (row_data, table) => {
+    //row data = Object.keys(search_arr.content[n]);
+    //table = document 상 테이블
+    row_data.forEach((row)=> {
         let table_tr = document.createElement('tr');
         table_tr.className = 'row_data';
         table_tr.innerHTML = `<td>${row.idx}</td>` +
@@ -48,7 +99,7 @@ function display_search_history(data){
                             `<td>${row.lange}</td>` +
                             `<td>N/A</td>` +
                             `<td>${row.date}</td>`;
-        //해당 부분 callback 함수로 변환
+
         table_tr.addEventListener('click', (e)=>{
             //click event init
             let data_tb = document.querySelectorAll('.row_data');
@@ -58,137 +109,37 @@ function display_search_history(data){
             let img = document.querySelector(".img_section").querySelectorAll("img");
             img[0].src = row.img01;
             img[1].src = row.img02;
-            e.target.parentNode.style.backgroundColor="blue";
+            e.target.parentNode.style.backgroundColor="#FE9A2E";    
         });
         table.appendChild(table_tr);
+        search_id = row.idx;
     });
+
+    document.querySelectorAll('.row_data')[0].querySelector('td').click(); 
 }
 
-//callback 함수
-function click_to_display_img(img01, img02) {
-    let img = document.querySelector(".img_section").querySelectorAll("img");
-    img[0].src = img01;
-    img[1].src = img02;
-}
-
-
-function ClearModel(evnet) {
-    evnet.preventDefault();
-    if (confirm("정말 오늘자 입력하신 작업모델을 모두 삭제하시겠습니까?\n*진행중이거나 검사가 완료된 항목은 지워지지 않습니다.") == true){    //확인
-        API.ClearTodayModel().then((res) => {
-            if(res === 200) {
-                alert("오늘자 검사되지 않은 입력모델이 모두 삭제되었습니다.");
-                location.reload();
-                // API.ReloadInsert().then((res) => {
-                //     ReloadModelTable(res);
-                // })
-            }
-        })
+const create_pagenate = (pagenate, arr_len, table) => {
+    for(var i = 1; i <= arr_len; i++){
+        let pagenum = document.createElement("a");
+        pagenum.innerHTML =i;
         
-    }else{   //취소
-        return false;
-    }
-    
-}
-
-function DeleteModel(event) {
-    event.preventDefault();
-    if ( document.querySelector('#input_number').value === "" || document.querySelector('#input_model').value === "" || document.querySelector('#input_id').value === ""){
-        alert("삭제할 항목을 선택해주세요");
-        return false;
-    }
-    else{
-        if (confirm("선택하신 내용을 지우시겠습니까?") == true) {
-            let form = document.querySelector('#form_insert');
-            let m_num = form.value_number.value;
-            let m_name = form.value_model.value;
-            let origin_m_num = form.value_id.value;
-    
-            API.DeleteModel(m_name, m_num, origin_m_num).then((res) => {
-                console.log(res);
-                if(res === 200) {
-                    alert("삭제되었습니다.");
-                    API.ReloadInsert().then((res) => {
-                        ReloadModelTable(res);
-                        document.querySelector('#input_id').value = "";
-                        document.querySelector('#input_number').value = "";
-                        document.querySelector('#input_model').value = "";
-                    })
-                } else {
-                    alert("에러발생");
-                }
-            })
-        }
-    }
-    
-}
-
-//==========================================================================================================================
-
-function SaveCheck(event) {
-    event.preventDefault();
-    if ( document.querySelector('#input_number').value === "" || document.querySelector('#input_model').value === ""){
-        alert("데이터(순번, 검사항목)를 입력하세요.");
-        return false;
-    }
-    else {
-        let form = document.querySelector('#form_insert');
-        let m_num = form.value_number.value;
-        let m_name = form.value_model.value;
-        let origin_m_num = form.value_id.value;
-        API.model_save(m_name, m_num, origin_m_num).then((res) => {
-            if(res === 200) {
-                //console.log("POST then Testing1")
-                API.ReloadInsert().then((res) => {
-                    console.log(res);
-                    ReloadModelTable(res);
-                })
-                document.querySelector('#input_id').value = "";
-                document.querySelector('#input_number').value = "";
-                document.querySelector('#input_model').value = "";
-            }
+        pagenum.addEventListener('click', (e) => {
+            //init
+            document.querySelectorAll('.row_data').forEach((data => { data.remove(); }));
+            create_table_row(search_arr.content[e.target.innerHTML], table);
+            pagenate.querySelectorAll('a').forEach((p => {
+                p.style.backgroundColor = "white";
+            }));
+            e.target.style.backgroundColor= "#FE9A2E";
+            e.target.style.color= "#272727";
         });
+        pagenate.appendChild(pagenum);
     }
-    
-};
-
-const ReloadModelTable = (data) => {
-    let table_body = document.querySelector("#model_table").querySelector("tbody");
-    table_body.querySelectorAll("tr").forEach(row =>{ row.remove(); })
-    data.forEach(arr => {
-        var btn_state = "";
-        var able="";
-        if(arr["state"] === '대기'){
-            btn_state = "btn btn-default as_btn";
-        }
-        else if(arr["state"] === '진행중'){
-            btn_state = "btn btn-default ads_btn";
-            able = "disabled";
-        }
-        else if(arr["state"] === '완료'){
-            btn_state = "btn btn-default ads_btn";
-            able = "disabled";
-        }
-        let tr = document.createElement("tr");
-        tr.innerHTML = `<td style='display:none'>${arr["id"]}</td>` + 
-                        `<td scope='row' style='width: 10%'>${arr["number"]}</td>` + 
-                        `<td style='width: 60%'>${arr["model"]}</td>` + 
-                        `<td style='width: 30%'><button class='${btn_state}' ${able} >${arr["state"]}</button></td>`;
-        table_body.append(tr);
-        
-    });
-    var s_btn = document.querySelectorAll(".as_btn");
-    s_btn.forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            let tr_ch = e.target.parentNode.parentNode.querySelectorAll("td");
-            console.log(tr_ch[0].innerHTML, tr_ch[1].innerHTML, tr_ch[2].innerHTML);
-            document.querySelector('#input_id').value = tr_ch[0].innerHTML;
-            document.querySelector('#input_number').value = tr_ch[1].innerHTML;
-            document.querySelector('#input_model').value = tr_ch[2].innerHTML;
-        });
-    })
-    
+    pagenate.querySelectorAll('a')[0].click();
 }
+
+
+
 
 
 
