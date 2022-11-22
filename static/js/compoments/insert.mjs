@@ -1,12 +1,14 @@
 
 import * as API from "../api.mjs";
 import * as WS_API from "../websocketServer.mjs";
+import * as LOADING from "./loading.mjs";
 
 window.onload = () => {
+    LOADING.showPage();
     WS_API.ws_connect_change_model();
 
     API.ReloadInsert().then((res) => {
-        console.log(res);
+        //console.log(res);
         ReloadModelTable(res);
     });
 
@@ -76,7 +78,7 @@ function DeleteModel(event) {
             let origin_m_num = form.value_id.value;
     
             API.DeleteModel(m_name, m_num, origin_m_num).then((res) => {
-                console.log(res);
+                //console.log(res);
                 if(res === 200) {
                     alert("삭제되었습니다.");
                     API.ReloadInsert().then((res) => {

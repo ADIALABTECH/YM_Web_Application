@@ -4,6 +4,7 @@ const NEW_MODEL_LIST_RELOAD = "/insert_reload";
 const TODAY_MODEL_LIST_CLEAR = "/clear";
 const DELETE_SELECT_MODEL="/delete";
 const SEARCH_HISTORY="/search_history";
+import * as LOADING from "./compoments/loading.mjs";
 
 //오늘 검사할 시료 정보를 입력하여 결과를 리턴해준다. (기본적으로 해당 통신의 결과 Status만 발송할 예정)
 //필요한 데이터 목록
@@ -84,9 +85,21 @@ export const SearchHistory = (model_name, start_date, end_date, start_lange, end
             "start_lange" :  start_lange,
             "end_lange" :  end_lange,
             "id" : id,
-            "now_page" : page,
+            "now_page" : page
         })
-    }).then((res) => res.json());
+    }).then((res) => { 
+        if(res.status == "400" || !res.ok){
+            throw new Error()
+        }
+        else{
+            return res.json();
+        }
+        
+    }).catch((error) => {
+        alert("검색결과가 존재하지 않습니다.");
+        LOADING.showPage();
+        return;
+    });
 
 }
 

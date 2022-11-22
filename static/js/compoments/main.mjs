@@ -1,8 +1,10 @@
 
 //import * as API from "../api.mjs";
 import * as WS_API from "../websocketServer.mjs";
+import * as LOADING from "./loading.mjs";
 
 window.onload = () => {
+    LOADING.showPage();
     WS_API.ws_coonnect_live_inspector(); //실시간 모니터링 코드
     img_direction_icon_append();
 }

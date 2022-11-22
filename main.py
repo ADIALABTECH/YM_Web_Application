@@ -189,8 +189,9 @@ class Data:
                 b_result = []
         
         result['content'] = result02
-        #result = rows;
+        
         return result;
+        
 
 
 #데이터 분석 결과 노출 / 실시간 및 비동기 작업 필요
@@ -390,8 +391,11 @@ def history_search():
     req_data = request.get_json();
     print(req_data);
     result = Data().searchHistory(req_data['model_name'], req_data['start_date'], req_data['end_date'], req_data['start_lange'], req_data['end_lange'], req_data['id'], req_data['now_page'])
-    print(result);
-    return json.dumps(result, cls=DecimalEncoder);
+    
+    if(len(result['content']) == 0):
+        return Response(json.dumps(result, cls=DecimalEncoder), mimetype='application/json', status=400);
+    else:
+        return Response(json.dumps(result, cls=DecimalEncoder), mimetype='application/json', status=200);
     
 
 # if __name__ == "__main__":

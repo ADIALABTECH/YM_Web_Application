@@ -17,7 +17,7 @@ export const ws_connect_change_model = (ws_path) => {
    };
    // 소켓 접속이 끝나면 호출되는 함수
    webSocket.onclose = function(message){
-       console.log("DisConnect");
+       console.log("DisConnect : "+ message.data );
    };
    // 소켓 통신 중에 에러가 발생되면 호출되는 함수
    webSocket.onerror = function(message){

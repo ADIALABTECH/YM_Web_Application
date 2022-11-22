@@ -1,4 +1,5 @@
 import * as API from "../api.mjs";
+import * as LOADING from "./loading.mjs";
 //import * as WS_API from "../websocketServer.mjs";
 let search_id = 1;
 let search_page = 1;
@@ -6,6 +7,7 @@ let search_total_page = 0;
 let search_arr = {};
 let search_pum = 1500;
 window.onload = () => {
+    LOADING.showPage();
     let today = new Date();   
     let input_list = document.querySelector("#search_control").querySelectorAll('input');
     input_list[1].value = today.toLocaleDateString().replace(/\./gi,"-").replace(/ /gi,"").substring(0, 10);
@@ -23,35 +25,64 @@ function AddEventInster(){
 }
 
 function dataSearch(event) {
+    LOADING.loadPage();
     document.querySelector('#search_next').style.visibility = 'visible';
     document.querySelector('#search_prev').style.visibility = 'visible';
     event.preventDefault();
     if(event.target.id === "search_next") {
         let input_list = document.querySelector("#search_control").querySelectorAll('input');
         API.SearchHistory(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, search_id, 1).then((res) =>{
-            alert("search");
-            search_arr = res;
-            display_search_history(res);
+            if(Object.keys(res.content).length == 0){
+                //nothing
+            }
+            else{
+                alert("검색되었습니다.");
+                search_arr = res;
+                display_search_history(res);
+                LOADING.showPage();
+            }
+            
         });
         
     }
     else if(event.target.id === "search_prev"){
         let input_list = document.querySelector("#search_control").querySelectorAll('input');
         API.SearchHistory(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, search_id, -1).then((res) =>{
-            alert("search");
-            search_arr = res;
-            display_search_history(res);
+            if(Object.keys(res.content).length == 0){
+                //nothing
+            }
+            else{
+                alert("검색되었습니다.");
+                search_arr = res;
+                display_search_history(res);
+                LOADING.showPage();
+            }
         });
     }
     else{
         let input_list = document.querySelector("#search_control").querySelectorAll('input');
         API.SearchHistory(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, search_id, 1).then((res) =>{
-            alert("search");
-            search_arr = res;
-            display_search_history(res);
+            if(Object.keys(res.content).length == 0){
+                //nothing
+            }
+            else{
+                alert("검색되었습니다.");
+                search_arr = res;
+                display_search_history(res);
+                LOADING.showPage();
+            }
+            // alert("검색되었습니다.");
+            // search_arr = res;
+            // let test = 0;
+            // for(var i =1; i <= Object.keys(search_arr.content).length; i++) {
+            //     test += Object.keys(search_arr.content[i]).length;
+            // }
+            // console.log(test);
+            // display_search_history(res);
+            // LOADING.showPage();
         });
     }
-   
+
 }
 
 
