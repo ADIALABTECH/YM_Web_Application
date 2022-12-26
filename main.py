@@ -1,5 +1,5 @@
 #from crypt import methods
-from flask import Flask, render_template, request, make_response, Response, flash
+from flask import Flask, render_template, request, make_response, Response, flash, send_file
 import pymysql
 import datetime
 import json
@@ -7,7 +7,9 @@ from time import time, sleep
 from random import random
 from config import config;
 from decimal import *;
-
+import to_csv;
+import pandas as pd
+import csv
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.mjs')
@@ -55,8 +57,8 @@ class Data:
     def selectData(self):
         db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
         curs = db.cursor()
-
-        sql = '''SELECT id, index_num, model_name, state FROM tb_inspection_model_list WHERE create_date = %s'''
+        date_format = '%Y-%m-%d'
+        sql = '''SELECT id, index_num, model_name, state, start_insp_time, end_insp_time FROM tb_inspection_model_list WHERE create_date = %s'''
         now = datetime.datetime.now()
         date = now.strftime('%Y-%m-%d')
         curs.execute(sql, date)
@@ -70,9 +72,10 @@ class Data:
                 state = "진행중";
             elif (e[3]==2):
                 state = "완료";
-            temp = {'id': e[0], 'number': e[1], 'model': e[2], 'state': state}
+            temp = {'id': e[0], 'number': e[1], 'model': e[2], 'start_insp_time':str(e[4]) , 'end_insp_time':str(e[5]), 'state': state}
             ret.append(temp)
-
+            
+        print(ret);
         db.commit()
         db.close()
         return ret
@@ -138,6 +141,20 @@ class Data:
 
         db.commit()
         db.close()
+    # 현재 측정중인 두께 데이터 재갱신
+    def searchThkforGraph(self):
+        db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
+        curs = db.cursor()
+        #Test Code
+        now_date = datetime.datetime.now();
+        before_date = now_date - datetime.timedelta(minutes=5);
+        #sql = "SELECT datetime, calc_thick from tb_model_measurement_list where inspect_id = (SELECT id from tb_inspection_model_list where state = 1 order by id desc limit 1) AND datetime between %s AND %s;";
+        sql = "SELECT datetime, calc_thick from tb_model_measurement_list where inspect_id = (SELECT id from tb_inspection_model_list where state = 1 order by id desc limit 1) order by id desc limit 500;";
+        #curs.execute(sql, (before_date, now_date))
+        curs.execute(sql)
+        rows = curs.fetchall()
+        print(rows);
+        return rows;
         
     #조건별 검사 이력내역 조회
     #input : 모델명, 검색 시작 날짜, 검색 종료 날짜, 검색 시작 거리, 검색 종료 거리
@@ -151,36 +168,52 @@ class Data:
         limit_qry_row = 1500;
         db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
         curs = db.cursor()
+        sql_ng_state01 = '''SELECT COUNT(*) FROM tb_model_measurement_list
+                            WHERE model_name = %s AND
+                            DATE(datetime) BETWEEN %s AND %s AND
+                            lange BETWEEN %s AND %s''';
+        sql_ng_state02 = '''SELECT COUNT(*) FROM tb_model_measurement_list
+                            WHERE model_name = %s AND
+                            DATE(datetime) BETWEEN %s AND %s AND
+                            lange BETWEEN %s AND %s AND
+                            (cam01_state = 1 OR cam02_state = 1)''';
+        curs.execute(sql_ng_state01, (model_name, start_date, end_date, start_lange, end_lange))
+        ng_result01 = curs.fetchone();
+        curs.execute(sql_ng_state02, (model_name, start_date, end_date, start_lange, end_lange))
+        ng_result02 = curs.fetchone();
+        
         if(page > 0) :
             sql = '''SELECT * FROM tb_model_measurement_list
             WHERE model_name=%s AND 
             DATE(datetime) BETWEEN %s AND %s AND
             lange BETWEEN %s AND %s AND
+            (cam01_state = 1 OR cam02_state = 1) AND
             id > %s order by id asc limit %s'''    
         elif(page < 0) :
             sql = '''SELECT * FROM tb_model_measurement_list
             WHERE model_name=%s AND 
             DATE(datetime) BETWEEN %s AND %s AND
             lange BETWEEN %s AND %s AND
+            (cam01_state = 1 OR cam02_state = 1) AND
             id < %s order by id asc limit %s'''        
         
         curs.execute(sql, (model_name, start_date, end_date, start_lange, end_lange, id, limit_qry_row))
         #rows = json.dumps(curs.fetchall(), cls=DecimalEncoder)
         rows = curs.fetchall()
-        result = {'content':'null'}
+        result = {'data':'null', 'content':'null'}
         result02 = {}
         b_result = []
         paging = 1;
         for idx, e in enumerate(rows, start=1):
             dic = {'idx' : str(e[0]),
-                    'model_nm' : str(e[1]),
-                    'thick01' : str(e[2]),
-                    'thick02' : str(e[3]),
-                    'LC' : str(e[4]),
+                    'model_nm' : str(e[2]),
+                    'calc_thick' : str(e[3]),
                     'lange' : str(e[5]),
                     'img01' : str(e[6]),
-                    'img02' : str(e[7]),
-                    'date' : str(e[8]),
+                    'img02' : str(e[8]),
+                    'cam01_ng' : str(e[7]),
+                    'cam02_ng' : str(e[9]),
+                    'date' : str(e[10]),
                   }
             b_result.append(dic)
             if(idx % 100 == 0):
@@ -189,98 +222,23 @@ class Data:
                 b_result = []
         
         result['content'] = result02
-        
+        result['data'] = {'total_data_cnt':ng_result01, 'ng_data_cnt':ng_result02}
+        db.close()
         return result;
-        
-
-
-#데이터 분석 결과 노출 / 실시간 및 비동기 작업 필요
-#main에서 호출됨
-@app.route('/Detect')
-def test_data():
-    #
-    def test_raw_data():
-
-        # 테스트 데이터
-        test_img_file = "test_image1"
-        test_model_name = "test_model1"
-        test_len_str = 100
-        test_len_end = 200
-        test_thick_len = [100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200]
-        test_thick = [37, 38, 37, 42, 41, 45, 37, 35, 36, 35, 33]
-        test_color = []
-
-        while True:
-
-            # 검사항목 설정 확인
-            last_Data = Data().checkData()
-            now = datetime.datetime.now()
-            date = now.strftime('%Y-%m-%d')
-            if last_Data == 0:
-                test_message = "[" + date + "] 설정된 검사항목이 존재하지 않습니다."
-            else:
-                test_message = "[" + date + "]"
-
-            # 이미지 파일 테스트 용
-            if test_img_file == "test_image1":
-                test_img_file = "test_image2"
-            elif test_img_file == "test_image2":
-                test_img_file = "test_image1"
-
-            # 모델명 테스트 용
-            if test_model_name == "test_model1":
-                test_model_name = "test_model2"
-            elif test_model_name == "test_model2":
-                test_model_name = "test_model1"
-
-            # 길이 시작 지점, 종료 지점 테스트 용
-            if test_len_str == 100:
-                test_len_str = 200
-                test_len_end = 300
-            elif test_len_str == 200:
-                test_len_str = 100
-                test_len_end = 200
-
-            if test_len_str == 100:
-                test_len_str = 200
-                test_len_end = 300
-            elif test_len_str == 200:
-                test_len_str = 100
-                test_len_end = 200
-
-            # 두께 그래프 테스트 용
-            if test_thick_len[0] == 100:
-                test_thick_len = [200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300]
-                test_thick = [41, 48, 42, 38, 39, 40, 35, 35, 36, 35, 33]
-            elif test_thick_len[0] == 200:
-                test_thick_len = [100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200]
-                test_thick = [37, 38, 37, 42, 41, 45, 37, 35, 36, 35, 33]
-
-            # 두께 그래프 색상 테스트
-            test_color.clear()
-            for test_list in test_thick:
-                if test_list < 41:
-                    test_color.append('rgba(0, 0, 0, 0.5)')
-                else:
-                    test_color.append('rgb(250, 83, 83)')
-
-            # json형식 데이터 전달
-            json_data = json.dumps({
-                'test_message': test_message,
-                'test_img': test_img_file,
-                'test_model_name': test_model_name,
-                'test_len_str': test_len_str,
-                'test_len_end': test_len_end,
-                'test_graph': {'test_thick_len': test_thick_len,
-                               'test_thick': test_thick},
-                'test_color': test_color})
-
-            sleep(5)
-            yield f"data:{json_data}\n\n"
-
-    return Response(test_raw_data(), mimetype='text/event-stream')
-
-
+    
+    def savecsv(self, model_name, start_date, end_date, start_lange, end_lange):
+        db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
+        curs = db.cursor()
+        sql = '''SELECT * FROM tb_model_measurement_list
+                WHERE model_name=%s AND 
+                DATE(datetime) BETWEEN %s AND %s AND
+                lange BETWEEN %s AND %s AND
+                (cam01_state = 1 OR cam02_state = 1)'''
+        curs.execute(sql, (model_name, start_date, end_date, start_lange, end_lange))
+        result = curs.fetchall();
+        db.close()
+        return result
+    
 # dashboard
 # 메인 페이지
 @app.route('/dashboard')
@@ -296,7 +254,18 @@ def main_page():
     print(config.WC_inputModel);
     return render_template("main.html", test_message=test_message)
 
-
+# 메인페이지 - 검사중인 모델 그래프 표시
+@app.route('/show_thk_graph', methods=['POST'])
+def show_thk_g():
+    # req_data = request.get_json();
+    # print(req_data);
+    result = Data().searchThkforGraph()
+    print(result)  
+    if(len(result) == 0):
+        return Response(json.dumps(result, cls=DecimalEncoder), mimetype='application/json', status=305);
+    else:
+        return Response(json.dumps(result, cls=DecimalEncoder), mimetype='application/json', status=200);
+    
 # 항목 추가 페이지
 @app.route('/insert')
 def insert():
@@ -396,6 +365,44 @@ def history_search():
         return Response(json.dumps(result, cls=DecimalEncoder), mimetype='application/json', status=400);
     else:
         return Response(json.dumps(result, cls=DecimalEncoder), mimetype='application/json', status=200);
+    
+@app.route('/save_to_csv', methods=['POST'])
+def save_csv():
+    req_data = request.get_json();
+    result = Data().savecsv(req_data['model_name'], req_data['start_date'], req_data['end_date'], req_data['start_lange'], req_data['end_lange'])
+    print(result)
+    # info = json.loads(json.dumps(result))
+    # df = pd.json_normalize(info['content'])
+    info = json.loads(json.dumps(result, cls=DecimalEncoder))
+    now_date = datetime.date.today().isoformat();
+    try:
+        f = open("static/image/csv/inspectionResult_"+str(now_date) + ".csv", "w", newline="", encoding='cp949')
+        fr = csv.writer(f)
+        # 헤더 추가하기
+        fr.writerow(["총 검사 갯수", "NG 판정 검사 갯수", "NG Percent", "파일 생성 날짜"])
+        summary_data = [req_data['total_cnt'], req_data['ng_cnt'], req_data['ng_percent'], now_date]
+        fr.writerow(summary_data)
+        fr.writerow("")
+        
+        fr.writerow(["ID", "Model명", "두께(mm)", "길이(m)", "사진1경로", "사진2경로", "날짜"])
+        for row in info:
+            #0, 2, 3, 5, 6, 8, 10
+            data = [str(row[0]), str(row[2]), str(row[3]), str(row[5]), row[6], row[8], str(row[10])]
+            fr.writerow(data)
+        f.close()
+        
+        return Response("", mimetype='application/json', status=200);
+    except:
+        return Response("", mimetype='application/json', status=200);
+   
+@app.route('/download_csv')
+def csv_file_download_with_file():
+    now_date = datetime.date.today().isoformat();
+    file_name = "static/image/csv/inspectionResult_"+str(now_date) + ".csv"
+    return send_file(file_name,
+                     mimetype='text/csv',
+                     attachment_filename='downloaded_file_name.csv',# 다운받아지는 파일 이름. 
+                     as_attachment=True)
     
 
 # if __name__ == "__main__":

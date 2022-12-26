@@ -6,6 +6,10 @@ let search_page = 1;
 let search_total_page = 0;
 let search_arr = {};
 let search_pum = 1500;
+let total_cnt = 0;
+let total_ng = 0;
+let ng_percent = "N/A %";
+
 window.onload = () => {
     LOADING.showPage();
     let today = new Date();   
@@ -24,13 +28,18 @@ function AddEventInster(){
     document.querySelector('#search_prev').addEventListener('click',dataSearch);
 }
 
+
 function dataSearch(event) {
+    total_cnt = 0;
+    total_ng = 0;
+    ng_percent = "N/A %";
     LOADING.loadPage();
     document.querySelector('#search_next').style.visibility = 'visible';
     document.querySelector('#search_prev').style.visibility = 'visible';
     event.preventDefault();
     if(event.target.id === "search_next") {
         let input_list = document.querySelector("#search_control").querySelectorAll('input');
+        
         API.SearchHistory(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, search_id, 1).then((res) =>{
             if(Object.keys(res.content).length == 0){
                 //nothing
@@ -62,6 +71,15 @@ function dataSearch(event) {
     else{
         let input_list = document.querySelector("#search_control").querySelectorAll('input');
         API.SearchHistory(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, search_id, 1).then((res) =>{
+            var ng_value = res.data;
+            total_cnt = ng_value.total_data_cnt;
+            total_ng = ng_value.ng_data_cnt;
+            ng_percent = (((ng_value.ng_data_cnt/ng_value.total_data_cnt)*100).toFixed(2)).toString() + "%";
+            document.querySelector('#summary_surface01').innerHTML =`총 검사 갯수 : ${total_cnt} 건`;
+            document.querySelector('#summary_surface02').innerHTML =`표면 불량 : ${total_ng} 건`;
+            document.querySelector('#summary_surface_t').innerHTML = ng_percent;
+            //csv 파일 생성
+            API.save_to_csv(input_list[0].value, input_list[1].value, input_list[2].value, input_list[3].value, input_list[4].value, total_cnt, total_ng, ng_percent);
             if(Object.keys(res.content).length == 0){
                 //nothing
             }
@@ -71,15 +89,6 @@ function dataSearch(event) {
                 display_search_history(res);
                 LOADING.showPage();
             }
-            // alert("검색되었습니다.");
-            // search_arr = res;
-            // let test = 0;
-            // for(var i =1; i <= Object.keys(search_arr.content).length; i++) {
-            //     test += Object.keys(search_arr.content[i]).length;
-            // }
-            // console.log(test);
-            // display_search_history(res);
-            // LOADING.showPage();
         });
     }
 
@@ -125,10 +134,10 @@ const create_table_row = (row_data, table) => {
         table_tr.className = 'row_data';
         table_tr.innerHTML = `<td>${row.idx}</td>` +
                             `<td>${row.model_nm}</td>` +
-                            `<td>${row.thick01}</td>` +
-                            `<td>${row.thick02}</td>` +
+                            `<td>${row.calc_thick}</td>` +
                             `<td>${row.lange}</td>` +
-                            `<td>N/A</td>` +
+                            `<td>${row.cam01_ng}</td>` +
+                            `<td>${row.cam02_ng}</td>` +
                             `<td>${row.date}</td>`;
 
         table_tr.addEventListener('click', (e)=>{

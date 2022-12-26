@@ -1,13 +1,18 @@
 
-//import * as API from "../api.mjs";
+import * as API from "../api.mjs";
 import * as WS_API from "../websocketServer.mjs";
 import * as LOADING from "./loading.mjs";
+import * as HightChart from "../highcharts.mjs";
+import * as COMMON from "../common.mjs";
 
 window.onload = () => {
-    LOADING.showPage();
-    WS_API.ws_coonnect_live_inspector(); //실시간 모니터링 코드
+    WS_API.ws_coonnect_live_inspector(); //실시간 모니터링 코드01
+    WS_API.ws_coonnect_live_inspector_img(); //실시간 모니터링 코드02
     img_direction_icon_append();
+    WS_API.ws_connect_change_thk();
+    LOADING.showPage();
 }
+
 
 //Live Camera Section 양옆 direction 방향 생성
 export const img_direction_icon_append = () => {
@@ -27,92 +32,23 @@ export const img_direction_icon_append = () => {
 }
 
 //Live Camera정보 실시간 렌더링(이름, 길이, 두께1, 두께2, light curtain, 사진01, 사진02)
-export const live_img_renewal = (cam01_path, cam02_path, m_len, m_thc01, m_thc02, m_lc, m_nm) => {
+export const live_img_renewal = (m_len, m_calc_thk, m_year, m_nm) => {
     let cam = document.querySelector(".img_section").querySelectorAll("img");
     //모델명, 두께1-2, 길이, light curtain 받아옴
     let model_nm = document.querySelector("#result_name");
     let model_len = document.querySelector("#result_len");
     let model_thc01 = document.querySelector("#result_thc01");
-    let model_thc02 = document.querySelector("#result_thc02");
-    let model_lc = document.querySelector("#result_lc");
-    cam[0].src = cam01_path;
-    cam[1].src = cam02_path;
-    model_nm.innerText="Model_name : " + m_nm;
-    model_len.innerText="Model_length : " + m_len;
-    model_thc01.innerText="Model_thick01 : " + m_thc01;
-    model_thc02.innerText="Model_thick02 : " + m_thc02;
-    model_lc.innerText="Model_LC : " + m_lc;
+    let model_date = document.querySelector("#result_year");
+    model_nm.innerText="측정중인 Model 이름 : " + m_nm;
+    model_len.innerText="측정중인 Model 길이 : " + m_len + "(m)";
+    model_thc01.innerText="측정중인 Model 두께 : " + m_calc_thk + "(mm)";
+    model_date.innerText="측정시간 : " + m_year;
 }
 
+//Live Camera정보 실시간 렌더링(이름, 길이, 두께1, 두께2, light curtain, 사진01, 사진02)
+export const live_img_render = (cam01_path, cam02_path) => {
+    let cam = document.querySelector(".img_section").querySelectorAll("img");
+    cam[0].src = "\\" + cam01_path;
+    cam[1].src = "\\" + cam02_path;
+}
 
-// 2022-09-26 일자로 코드 임시 이전
-/* <script type="text/javascript">
-$(document).ready(function() {
-    const source = new EventSource("/Detect")
-    source.onmessage = function(event) {
-        const data = JSON.parse(event.data)
-
-        document.getElementById("message").textContent = data.test_message
-        document.getElementById("result_img").src="/static/image/" + data.test_img + ".png"
-        document.getElementById("result_name").textContent = "Test Model : " + data.test_model_name
-        document.getElementById("result_len").textContent = "Test Length : " + data.test_len_str + " ~ " + data.test_len_end + "m"
-
-        if(window.chartObj!=undefined){
-            window.chartObj.destroy()
-        }
-        window.chartObj = new Chart(document.getElementById("thickness_chart"),{
-            type: 'line',
-            data: {
-                labels: data.test_graph.test_thick_len,
-                datasets: [{
-                    label: "두께",
-                    borderColor: 'rgba(0, 0, 0, 0.5)',
-                    data: data.test_graph.test_thick,
-                    pointBackgroundColor: data.test_color,
-                    pointBorderWidth: 2,
-                    pointBorderColor: data.test_color,
-                    pointStyle: 'circle',
-                    pointRadius: 5,
-                    pointHoverRadius: 10,
-                    cubicInterpolationMode: 'monotone',
-                    tension: 0.4,
-                    fill: false,
-                }, {
-                    borderColor: 'rgba(31, 224, 208, 0.17)',
-                    backgroundColor: 'rgba(31, 224, 208, 0.17)',
-                    data: [40,40,40,40,40,40,40,40,40,40,40],
-                    radius: 0,
-                    fill: '+1',
-                }, {
-                    borderColor: 'rgba(31, 224, 208, 0.17)',
-                    data: [30,30,30,30,30,30,30,30,30,30,30],
-                    radius: 0,
-                    fill: false,
-                }]
-            },
-            options: {
-                responsive: false,
-
-                scales: {
-                    y: {
-                        suggestedMin: 10,
-                        suggestedMax: 60
-                    }
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: data.test_len_str + ' ~ ' + data.test_len_end + 'm 두께 테스트 데이터',
-                        font: {
-                            size: 16
-                        }
-                    },
-                    legend: {
-                        display: false
-                    },
-                }
-            }
-        });
-    }
-});
-</script> */

@@ -3,6 +3,10 @@
 {% block content %}
 
     <div id="main_container">
+        <div id="today_inspector">
+            
+        </div>
+
         <div id="content_search">
             <form id="form_insert" role="form" name="frm" method='post'>
                 <div id="search_control">
@@ -16,7 +20,7 @@
                     <label class="search_text">~</label>
                     <input id="input_end" style="float: left;" type="text" name="value_end" placeholder="종료" class="form-control" autocomplete="off" value="100000">
                     <button id="btn_search" type="button" name="search" value="search">검색</button>
-                    <button id="btn_export" type="button" name="-" value="" class="btn btn-success btn-sm" style="height: 35px; padding: 0.5rem;">Excel Export</button>
+                    <button id="btn_export" type="button" name="-" value="" class="btn btn-success btn-sm" style="height: 35px; padding: 0.5rem;" onclick="location.href='download_csv'">Excel Export</button>
                 </div>
             </form>
         </div>
@@ -26,14 +30,14 @@
                 <div class="content_title">
                     <label class="title_text">Summary</label>
                 </div>
-                <label id="summary_thick">두께 불량 : N 건</label>
-                <label id="summary_surface">표면 불량 : N 건</label>
+                <label id="summary_surface01">-</label>
+                <label id="summary_surface02">-</label>
             </div>
 
             <div id="content_thick_graph">
                 <div class="content_title">
-                    <label class="title_text">thick graph</label>
-                    <label id="summary_surface">데이터가 없습니다.</label>
+                    <label class="title_text">Product NG</label>
+                    <label id="summary_surface_t">-</label>
                 </div>
                 
             </div>
@@ -54,7 +58,13 @@
                 <div id="history_table">
                     <table class="table" style="color:white">
                         <tr>
-                            <th>ID</th><th>모델명</th><th>두께01</th><th>두께02</th><th>거리</th><th>NG</th><th>시간</th>
+                            <th>ID</th>
+                            <th>모델명</th>
+                            <th>두께</th>
+                            <th>거리</th>
+                            <th>Cam01</th>
+                            <th>Cam02</th>
+                            <th>시간</th>
                         </tr>
                     </table>
                 </div>

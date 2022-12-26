@@ -4,6 +4,8 @@ const NEW_MODEL_LIST_RELOAD = "/insert_reload";
 const TODAY_MODEL_LIST_CLEAR = "/clear";
 const DELETE_SELECT_MODEL="/delete";
 const SEARCH_HISTORY="/search_history";
+const SHOW_THK_GRAPH="/show_thk_graph";
+const JSON_TO_CSV = "/save_to_csv";
 import * as LOADING from "./compoments/loading.mjs";
 
 //오늘 검사할 시료 정보를 입력하여 결과를 리턴해준다. (기본적으로 해당 통신의 결과 Status만 발송할 예정)
@@ -108,3 +110,37 @@ export const SearchHistory = (model_name, start_date, end_date, start_lange, end
 export const ShowLiveInfo = () => {
     return fetch()
 }
+
+// 추후 날짜데이터는 받아와야할것 같음
+export const show_thick_graph = (now_datetime) => {
+    return fetch(SHOW_THK_GRAPH, {
+        method: 'POST',
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify({
+            "now_date" : now_datetime,
+        })
+    }).then((res) => { 
+        return res.json(); 
+    })
+}
+
+// 현재 검색결과를 csv화 시킴
+export const save_to_csv = (model_name, start_date, end_date, start_lange, end_lange, total_cnt, ng_cnt, ng_percent) => {
+    return fetch(JSON_TO_CSV, {
+        method: 'POST',
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify({
+            "model_name" : model_name,
+            "start_date" :  start_date,
+            "end_date" :  end_date,
+            "start_lange" :  start_lange,
+            "end_lange" :  end_lange,
+            "total_cnt" : total_cnt,
+            "ng_cnt" : ng_cnt,
+            "ng_percent" : ng_percent
+        })
+    }).then((res) => { 
+        return res.json(); 
+    })
+}
+

@@ -6,7 +6,7 @@
 }
 
 #content_table {
-    width: 60%;
+    width: 75%;
     background-color: #333A40;
     border-radius: 5px;
     padding-bottom: 20px;
@@ -145,7 +145,7 @@ table.table_type .even {
 }
 
 #content_insert {
-    width: 60%;
+    width: 75%;
     height: 140px;
     border-radius: 5px;
     border: 1px solid #465259;
@@ -164,12 +164,13 @@ table.table_type .even {
 
 label {
     margin: 0;
-    float: left;
+    /*float: left;*/
     color: white;
     margin-left: 10px;
     margin-right: 10px;
     height:40px;
-    min-width:50px;
+    /*min-width:50px;*/
+    display:inline-block;
 
 }
 
@@ -184,7 +185,7 @@ label {
 
 
 #insert_input {
-    width: 50%;
+    width: 63%;
     height: 40px;
     line-height: 40px;
     float: left;
@@ -207,7 +208,7 @@ label {
 }
 
 #insert_btn {
-    width: 45%;
+    width: 35%;
     float: left;
     height: 40px;
     display: flex;

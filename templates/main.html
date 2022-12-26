@@ -10,36 +10,45 @@
             <div class="img_direction"></div>
             <!-- live img -->
             <div class="img_section">
-                <img src="{{url_for('static', filename='/image/no_img.jpg')}}">
-                <img src="{{url_for('static', filename='/image/no_img.jpg')}}">
+                <img src="{{url_for('static', filename='/image/no_img.jpg')}}" onerror="this.src='{{url_for('static', filename='/image/error_notice.png')}}';">
+                <img src="{{url_for('static', filename='/image/no_img.jpg')}}" onerror="this.src='{{url_for('static', filename='/image/error_notice.png')}}';">
             </div>
             <div class="img_direction"></div>
             <!-- live img -->
         </div>
+
 
         <div id="sub_container">
             <div id="content_info">
                 <div class="content_title">
                     <label class="title_text">Information</label>
                 </div>
+                <label id="result_year"></label>
                 <label id="result_name"></label>
                 <label id="result_len"></label>
                 <label id="result_thc01"></label>
-                <label id="result_thc02"></label>
                 <label id="result_lc"></label>
             </div>
             <div id="content_graph">
                 <div class="content_title">
-                    <label class="title_text">Graph</label>
+                    <label class="title_text">thickness Data</label>
+                    <label id='loading_state' style="float:right; margin-right:10px;">
                 </div>
-                <canvas id="thickness_chart" width="650" height="350"></canvas>
+                <div id="thickness_chart" width="650" height="350"></div>
             </div>
         </div>
+
     </div>
 
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script type="module" src="../static/js/compoments/main.mjs">
         {{ws}}
     </script>
+
     
 
 {% endblock %}

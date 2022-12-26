@@ -176,8 +176,10 @@ export const ReloadModelTable = (data) => {
         let tr = document.createElement("tr");
         tr.innerHTML = `<td style='display:none'>${arr["id"]}</td>` + 
                         `<td scope='row' style='width: 10%'>${arr["number"]}</td>` + 
-                        `<td style='width: 60%'>${arr["model"]}</td>` + 
-                        `<td style='width: 30%'><button class='${btn_state}' ${able} >${arr["state"]}</button></td>`;
+                        `<td style='width: 40%'>${arr["model"]}</td>` + 
+                        `<td style='width: 15%'>${arr["start_insp_time"]}</td>` + 
+                        `<td style='width: 15%'>${arr["end_insp_time"]}</td>` + 
+                        `<td style='width: 10%'><button class='${btn_state}' ${able} >${arr["state"]}</button></td>`;
         table_body.append(tr);
         
     });

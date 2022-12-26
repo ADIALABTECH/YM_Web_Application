@@ -47,6 +47,8 @@
                             <th style="display: none"></th>
                             <th scope="cols">순번</th>
                             <th scope="cols">검사 항목</th>
+                            <th scope="cols">검사 시작시간</th>
+                            <th scope="cols">검사 종료시간</th>
                             <th scope="cols">항목 상태</th>
                         </tr>
                     </thead>
@@ -55,8 +57,10 @@
                         <tr>
                             <td style="display:none">{{data.id}}</td>
                             <td scope="row" style="width: 10%;">{{data.number}}</td>
-                            <td style="width: 60%;">{{data.model}}</td>
-                            <td style="width: 30%;"><button class="btn btn-default" >{{data.state}}</button></td>
+                            <td style="width: 40%;">{{data.model}}</td>
+                            <td style="width: 15%;">HH:MM:SS</td>
+                            <td style="width: 15%;">HH:MM:SS</td>
+                            <td style="width: 10%;"><button class="btn btn-default" >{{data.state}}</button></td>
                         </tr>
                         {% endfor %}
                     </tbody>
