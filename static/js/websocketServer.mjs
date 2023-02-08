@@ -3,7 +3,7 @@ import * as Render_main from "../js/compoments/main.mjs";
 import * as Render_history from "../js/compoments/history.mjs";
 import * as API from "../js/api.mjs";
 import * as HightChart from "../js/highcharts.mjs";
-const ip = "ws://192.168.1.4:5535";
+const ip = "ws://192.168.0.106:5535";
 var limit_img_error_count = 0;
 
 export const ws_connect_change_thk = (ws_path) => {
@@ -28,6 +28,7 @@ export const ws_connect_change_thk = (ws_path) => {
    // 출력 area에 메시지를 표시한다.
        //console.log(JSON.parse(message.data).change_state);
        let res = JSON.parse(message.data);
+       console.log(res);
         res.forEach((value, index) => {
             value[1] = parseFloat(value[1]);
         });

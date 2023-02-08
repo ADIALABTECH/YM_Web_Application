@@ -28,26 +28,26 @@ const show_hight_chart = (json_data) => {
     })
     Highcharts.chart('thickness_chart', {
         chart: {
-            width: 1355,
-            height: 250,
-            marginTop:40,
+            width: 900,
+            height: 70,
+            marginTop:10,
         },
 
         title: {
-            text: '측정중인 Model 두께 현황'
+            text: ''
         },
     
         subtitle: {
-            text: '-'
+            text: ''
         },
         
         //세로축
         yAxis: {
             title: {
-                text: '측정 두께(mm)'
+                text: '(mm)'
             },
             min:0,
-            max:0.5
+            max:1
         },
         //가로축
         xAxis: {
@@ -59,7 +59,7 @@ const show_hight_chart = (json_data) => {
                 }
             },
             title: {
-                text: '측정시간'
+                text: null //'측정시간'
             },
             // accessibility: {
             //     rangeDescription: y_axis_data
@@ -67,11 +67,15 @@ const show_hight_chart = (json_data) => {
 
         },
         //현재 상태에서는 legend 불필요
-        // legend: {
-        //     layout: 'vertical',
-        //     align: 'right',
-        //     verticalAlign: 'middle'
-        // },
+        legend: {
+            enabled: false
+            // layout: 'vertical',
+            // align: 'right',
+            // verticalAlign: 'middle'
+        },
+        exporting: {
+            enabled: false
+        },
         //xAxis 빈도
         plotOptions: {
             series: {

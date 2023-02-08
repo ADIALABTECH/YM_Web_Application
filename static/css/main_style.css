@@ -46,7 +46,7 @@ img {
 #content_img {
     width: calc(100%);
     float: left;
-    height: calc(100vh - 550px);
+    height: calc(100vh - 360px);
     background-color: #333A40;
     border-radius: 5px;
     border: 1px solid #465259;
@@ -87,26 +87,35 @@ img {
 
 #sub_container {
     width: 100%;
-    height: 340px;
+    height: 152px;
     float: left;
     margin-left: 0%;
     display:flex;
 }
 
 #result_name, #result_len, #result_thc01, #result_thc02, #result_lc, #result_year {
-    width: 93%;
+    width:47%;
     margin-block-start: 1.3em;
     margin-block-end: 1.3em;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
     font-weight: bold;
-    font-size: 20px;
-    margin:16px;
+    font-size: 17px;
+    margin:5px;
     text-align: left;
 }
 
+#result_name, #result_len{
+    margin-top:15px
+}
+
+#result_name, #result_thc01{
+    margin-left:15px
+}
+
+
 #content_info {
-    flex:0.3;
+    flex:1;
     height: 100%;
     background-color: #333A40;
     border-radius: 5px;
