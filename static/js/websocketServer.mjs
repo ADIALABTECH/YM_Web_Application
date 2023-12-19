@@ -28,7 +28,7 @@ export const ws_connect_change_thk = (ws_path) => {
    // 출력 area에 메시지를 표시한다.
        //console.log(JSON.parse(message.data).change_state);
        let res = JSON.parse(message.data);
-       console.log(res);
+    //    console.log(res);
         res.forEach((value, index) => {
             value[1] = parseFloat(value[1]);
         });

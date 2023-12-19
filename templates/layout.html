@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <title>YM-Dashboard</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{url_for('static', filename='css/base_style.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/common.css')}}">
     <link rel="stylesheet" type="text/css" id="changeStyle" href="">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <!-- <link rel="stylesheet" href="{{url_for('static', filename='css/history_style.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/insert_style.css')}}"> -->
     <script src="../static/js/common.mjs"></script>
@@ -14,9 +16,16 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.js"></script>
     <!-- bootstrap icon -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="semantic/dist/semantic.min.js"></script>
 </head>
+
 <body>
     <div class='load_background'></div>
     <div class="loader"></div>
@@ -38,6 +47,49 @@
         <div id="content_footer">copyrightⓒ 2022 All rights reserved by ADIA Lab. Inc.</div>
     </footer>
     <script type="module" src="../static/js/compoments/loading.mjs"></script>
-    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        function subtractHoursFromDate(date, hours) {
+            const newDate = new Date(date.getTime() - (hours * 60 * 60 * 1000));
+            return newDate;
+        }
+        function isLaterThan10SecondsAgo(date) {
+            const currentTime = new Date();
+            const timeDiffSeconds = (currentTime.getTime() - date.getTime()) / 1000;
+            console.log(timeDiffSeconds)
+            return timeDiffSeconds < 5;
+        }
+        var last, last_model = 0
+        var intervalId = setInterval(function () {
+            fetch('last_defective').then((response) => response.json()).then((data) => {
+                var last_date = new Date(data[0][10])
+                last_date = subtractHoursFromDate(last_date, 9)
+
+                isLaterThan10SecondsAgo(last_date)
+
+                if (last && last_date > last && (last_model == 0 || last_model != data[0][2])){
+                    Toastify({
+                        text: `${data[0][2]} 모델에 불량이 발생했습니다.`,
+                        duration: 300000,
+                        destination: "history",
+                        newWindow: true,
+                        close: true,
+                        gravity: "top", // `top` or `bottom`
+                        position: "right", // `left`, `center` or `right`
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        oldestFirst: false,
+                        style: {
+                          background: "linear-gradient(to right, #00b09b, #96c93d)",
+                        },
+                        onClick: function(){} // Callback after click
+                      }).showToast();
+                      last_model = data[0][2];
+                }
+                last = last_date
+            });
+        }, 2000);
+    </script>
+
 </body>
+
 </html>

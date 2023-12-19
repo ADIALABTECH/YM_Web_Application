@@ -1,5 +1,5 @@
 #from crypt import methods
-from flask import Flask, render_template, request, make_response, Response, flash, send_file
+from flask import Flask, render_template, request, make_response, Response, flash, send_file, jsonify
 import pymysql
 import datetime
 import json
@@ -7,18 +7,78 @@ from time import time, sleep
 from random import random
 from config import config;
 from decimal import *;
+from apscheduler.schedulers.background import BackgroundScheduler
 import to_csv;
 import pandas as pd
 import csv
-
 import mimetypes
+import atexit
+import os
 mimetypes.add_type('application/javascript', '.mjs')
+
+lc = 0
+
+def check_lc():
+    global lc
+    db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
+    curs = db.cursor()
+    
+    sql = '''SELECT `light_curtain`,`datetime` FROM ym_result.tb_sensor ORDER BY `idx` DESC LIMIT 0, 1;'''
+    curs.execute(sql)
+    rows = curs.fetchall()
+    # print(rows[0])
+    '''
+    수정 예시 :
+    Id : primary key
+    Index_num : lc 값
+    Model_name : lc값 이 변한 시간 ( start_insp_time 과 동일)
+    Create_date : 입력한 날짜
+    State : 진행, 완료로 구성
+    Start_insp_time : lc값이 변한 시간 (검사 시작)
+    End_insp_time : lc값이 변한 시간 ( 검사 종료)  # Lc 값이 증가하게 되는 시간이 이전 모델의 검사종료시간이되고, 다음모델의 검사 시작시간이 됩니다.
+    Lc : 검사 당시의 LC 값
+    Thick_serise : 의미없음
+    '''
+    if lc != rows[0][0]:
+        lc = rows[0][0]
+        dt = rows[0][1]
+        now = datetime.datetime.now()
+        date = now.strftime('%Y-%m-%d')
+        sql = '''update ym_result.tb_inspection_model_list set end_insp_time = now(), state = 2 where model_name like DATE_FORMAT(now(), '%%%Y-%m-%d%%') and end_insp_time is null;'''
+        curs.execute(sql)
+        print(f"{lc} 생성")
+                        
+        sql = '''INSERT INTO tb_inspection_model_list (index_num, model_name, create_date, start_insp_time, state) VALUES (%s, %s, %s, %s, 1)'''
+        if not curs.execute(sql, (lc, dt.strftime('%Y-%m-%d %H-%M-%S'), date, dt.strftime('%Y-%m-%d %H:%M:%S'))):
+            flash("생성 오류[1000]")
+
+    db.commit()
+    db.close()
 
 
 app = Flask(__name__)
 app.secret_key = "Master_Key"
 
 DB_flag = 0
+
+@app.route('/last_defective')
+def last_defective():
+    db = pymysql.connect(host=config.DB_host, user=config.DB_user, db=config.DB_schema, password=config.DB_pw, charset=config.DB_charset, port=config.DB_port)
+    curs = db.cursor()
+    limit = (datetime.datetime.now() - datetime.timedelta(seconds=10)).strftime('%Y-%m-%d %H:%M:%S')
+    
+    sql = '''SELECT * FROM ym_result.tb_model_measurement_list where cam02_state = 1 or cam01_state = 1 order by id desc limit 0, 1;'''
+    curs.execute(sql)
+    rows = curs.fetchall()
+
+    return jsonify(rows)
+
+if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(func=check_lc, trigger="interval", seconds=1)
+    scheduler.start()
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: scheduler.shutdown())
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -182,7 +242,7 @@ class Data:
         curs.execute(sql_ng_state02, (model_name, start_date, end_date, start_lange, end_lange))
         ng_result02 = curs.fetchone();
         
-        if(page > 0) :
+        if(page == 1) :
             sql = '''SELECT * FROM tb_model_measurement_list
             WHERE model_name=%s AND 
             DATE(datetime) BETWEEN %s AND %s AND
